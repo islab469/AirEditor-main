@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "188637891300",
+    "project_id": "unitydata-22533",
+    "storage_bucket": "unitydata-22533.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:188637891300:android:08fcc6cc1878684a2e7af1",
+        "android_client_info": {
+          "package_name": "com.ISlab.AIR_Android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1-qnnmhyhrLyBgM_Z_1-IfVK_6rw7aT0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
