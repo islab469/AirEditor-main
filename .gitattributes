@@ -1,36 +1,47 @@
-# 強制 Unity 專案文字檔使用 LF 換行
-*.cs     text eol=lf
-*.shader text eol=lf
-*.cginc  text eol=lf
-*.txt    text eol=lf
-*.asmdef text eol=lf
-*.json   text eol=lf
-*.xml    text eol=lf
-*.uxml   text eol=lf
-*.uss    text eol=lf
-*.yaml   text eol=lf
-*.yml    text eol=lf
-# 二進位檔案標示為 binary，避免被 Git 誤判可合併
-*.png binary
-*.jpg binary
-*.jpeg binary
-*.psd binary
-*.fbx binary
-*.prefab binary
-*.unity binary
-*.mat binary
-*.mp3 binary
-*.ogg binary
-*.wav binary
-*.zip binary
-*.dll binary
-*.exe binary
-*.apk binary
-*.aab binary
-# 強制這些文字檔案使用 LF 結尾
-*.cs text eol=lf
-*.meta text eol=lf
-*.asset text eol=lf
-*.unity text eol=lf
-*.json text eol=lf
-*.tgz filter=lfs diff=lfs merge=lfs -text
+# ============================================
+# Unity 專案標準 .gitattributes 設定
+
+# ---------- 強制文字檔使用 LF ----------
+# 避免跨平台（Windows/macOS/Linux）換行混亂
+*.cs      text eol=lf
+*.js      text eol=lf
+*.shader  text eol=lf
+*.cginc   text eol=lf
+*.txt     text eol=lf
+*.asmdef  text eol=lf
+*.json    text eol=lf
+*.xml     text eol=lf
+*.uxml    text eol=lf
+*.uss     text eol=lf
+*.yaml    text eol=lf
+*.yml     text eol=lf
+*.meta    text eol=lf
+*.asset   text eol=lf
+*.unity   text eol=lf
+# ---------- 確保 bash / shell 腳本可在 mac/Linux 上執行 ----------
+*.sh      text eol=lf
+*.py      text eol=lf
+# ---------- 忽略二進位檔的自動轉換 ----------
+# 以下檔案皆為二進位格式，不應轉換換行
+*.dll     binary
+*.exe     binary
+*.so      binary
+*.a       binary
+*.lib     binary
+*.pdb     binary
+# ---------- 使用 Git LFS 管理大型資源檔 ----------
+# 若已安裝 Git LFS，這些檔案將不直接存入 Git repo
+*.fbx           filter=lfs diff=lfs merge=lfs -text
+*.obj           filter=lfs diff=lfs merge=lfs -text
+*.png           filter=lfs diff=lfs merge=lfs -text
+*.jpg           filter=lfs diff=lfs merge=lfs -text
+*.jpeg          filter=lfs diff=lfs merge=lfs -text
+*.psd           filter=lfs diff=lfs merge=lfs -text
+*.mp3           filter=lfs diff=lfs merge=lfs -text
+*.wav           filter=lfs diff=lfs merge=lfs -text
+*.mp4           filter=lfs diff=lfs merge=lfs -text
+*.webm          filter=lfs diff=lfs merge=lfs -text
+*.tgz           filter=lfs diff=lfs merge=lfs -text
+*.unitypackage  filter=lfs diff=lfs merge=lfs -text
+*.zip           filter=lfs diff=lfs merge=lfs -text
+Assets/Firebase/Plugins/x86_64/FirebaseCppApp-12_8_0.* filter=lfs diff=lfs merge=lfs -text

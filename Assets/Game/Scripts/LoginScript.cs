@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using TMPro;
 using System.Threading.Tasks;
 using UnityEngine.UI;
@@ -8,10 +8,10 @@ using UnityEngine.UI;
 public class LoginScript : MonoBehaviour
 {
     [SerializeField]
-    TMP_InputField inputEmail; // ³s±µ¨ì¹q¤l¶l¥ó¿é¤JÄæ
+    TMP_InputField inputEmail; // é€£æ¥åˆ°é›»å­éƒµä»¶è¼¸å…¥æ¬„
 
     [SerializeField]
-    TMP_InputField inputPassword; // ³s±µ¨ì±K½X¿é¤JÄæ
+    TMP_InputField inputPassword; // é€£æ¥åˆ°å¯†ç¢¼è¼¸å…¥æ¬„
 
     [SerializeField]
     TextMeshProUGUI textEmail;
@@ -23,77 +23,85 @@ public class LoginScript : MonoBehaviour
     bool debugMode = false;
     string userEmail = FirebaseManager.getEmail();
 
-    // µù¥U¥Î¤áªº¤èªk
+    // è¨»å†Šç”¨æˆ¶çš„æ–¹æ³•
     private void Start()
     {
-
         QualitySettings.vSyncCount = 0;
-        UnityEngine.Application.targetFrameRate = 30;
-        if (FirebaseManager.isLogin()){
+        Application.targetFrameRate = 30;
+
+        if (FirebaseManager.isLogin())
+        {
             loginPanel.SetActive(false);
         }
 
-        if (debugMode) {
+        if (debugMode)
+        {
             inputEmail.text = "asd123@gmail.com";
             inputPassword.text = "123456789";
-
         }
 
-        RequestManager.sendTestRequestToFetchQuestion();
-        //RequestManager.sendTestRequestToGeneateQuestion();
+        // âœ… å‘¼å«ä½ çš„ async æ–¹æ³•ï¼ˆä¸æœƒå ±è­¦å‘Šï¼‰
+        _ = FetchTestQuestions();
     }
+
+    // âœ… é€™æ˜¯ä½ å®šç¾©çš„ async æ–¹æ³•
+    private async Task FetchTestQuestions()
+    {
+        await RequestManager.sendTestRequestToFetchQuestion();
+    }
+
     public async void Register(){
         FirebaseManager.checkAndStart();
-        await FirebaseManager.Register(inputEmail.text, inputPassword.text); // ½Õ¥Î FirebaseManager ªºµù¥U¤èªk
+        await FirebaseManager.Register(inputEmail.text, inputPassword.text); // èª¿ç”¨ FirebaseManager çš„è¨»å†Šæ–¹æ³•
         updateEmailAndPassword();
     }
 
-    // µn¤J¥Î¤áªº¤èªk
+    // ç™»å…¥ç”¨æˆ¶çš„æ–¹æ³•
     [SerializeField] private GameObject loadingIndicator;
     [SerializeField] private Text errorMessage;
 
     public async void Login()
     {
-        //loadingIndicator.SetActive(true); // Åã¥Ü Loading °Êµe
-        //errorMessage.text = ""; // ²MªÅ¿ù»~°T®§
+        //loadingIndicator.SetActive(true); // é¡¯ç¤º Loading å‹•ç•«
+        //errorMessage.text = ""; // æ¸…ç©ºéŒ¯èª¤è¨Šæ¯
         FirebaseManager.checkAndStart();
         try
         {
             await FirebaseManager.Login(inputEmail.text, inputPassword.text);
             if (FirebaseManager.isLogin())
             {
-                Debug.LogError("µn¤Jsuccess");
+                Debug.LogError("ç™»å…¥success");
                 loginPanel.SetActive(false);
                 updateEmailAndPassword();
             }
             else
             {
-                errorMessage.text = "µn¤J¥¢±Ñ¡A½ĞÀË¬d±b¸¹±K½X¡I";
-                Debug.LogError("µn¤J¥¢±Ñ");
+                errorMessage.text = "ç™»å…¥å¤±æ•—ï¼Œè«‹æª¢æŸ¥å¸³è™Ÿå¯†ç¢¼ï¼";
+                Debug.LogError("ç™»å…¥å¤±æ•—");
             }
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"µn¤J¿ù»~: {e.Message}");
+            Debug.LogError($"ç™»å…¥éŒ¯èª¤: {e.Message}");
 
         }
         finally
         {
-            //loadingIndicator.SetActive(false); // ÁôÂÃ Loading °Êµe
+            //loadingIndicator.SetActive(false); // éš±è— Loading å‹•ç•«
         }
         /*FirebaseManager.checkAndStart();
-        await FirebaseManager.Login(inputEmail.text, inputPassword.text); // ½Õ¥Î FirebaseManager ªºµn¤J¤èªk
+        await FirebaseManager.Login(inputEmail.text, inputPassword.text); // èª¿ç”¨ FirebaseManager çš„ç™»å…¥æ–¹æ³•
         updateEmailAndPassword();
         if (FirebaseManager.isLogin()){
             loginPanel.SetActive(false);
         }*/
     }
-    // Àò¨ú·í«e¥Î¤áªº¹q¤l¶l¥ó
+    // ç²å–ç•¶å‰ç”¨æˆ¶çš„é›»å­éƒµä»¶
     
-    // µn¥X¥Î¤áªº¤èªk
+    // ç™»å‡ºç”¨æˆ¶çš„æ–¹æ³•
     public void Logout(){
         FirebaseManager.checkAndStart();
-        FirebaseManager.Logout(); // ½Õ¥Î FirebaseManager ªºµn¥X¤èªk
+        FirebaseManager.Logout(); // èª¿ç”¨ FirebaseManager çš„ç™»å‡ºæ–¹æ³•
     }
 
     private void updateEmailAndPassword(){
