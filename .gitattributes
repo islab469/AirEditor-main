@@ -1,8 +1,4 @@
-# ============================================
-# 🌐 Unity 專案標準 .gitattributes 設定
-# 📅 Updated: 2025/04 - 為跨平台團隊協作優化
-
-# ---------- 🧾 一般文字檔（強制使用 LF 換行） ----------
+# ========== 統一文字換行（使用 LF） ==========
 *.cs       text eol=lf
 *.js       text eol=lf
 *.shader   text eol=lf
@@ -18,17 +14,11 @@
 *.unity    text eol=lf
 *.uxml     text eol=lf
 *.uss      text eol=lf
-# ---------- ⚙️ 腳本與設定檔（保證跨平台執行） ----------
-*.py       text eol=lf
-*.sh       text eol=lf
-*.bat      text eol=crlf
-*.cmd      text eol=crlf
 *.md       text eol=lf
-*.csv      text eol=lf
-*.ts       text eol=lf
-*.html     text eol=lf
-*.css      text eol=lf
-# ---------- 🚫 不處理的二進位檔（禁止換行轉換） ----------
+*.sh       text eol=lf
+*.py       text eol=lf
+
+# ========== 二進位檔案 ==========
 *.dll      binary
 *.exe      binary
 *.so       binary
@@ -36,12 +26,8 @@
 *.lib      binary
 *.pdb      binary
 *.bin      binary
-*.dat      binary
-*.bytes    binary
 *.jar      binary
-*.nupkg    binary
-# ---------- 🎒 Git LFS 管理大型資源檔（必須安裝 git-lfs） ----------
-# ✅ 請確認 git lfs install 已執行一次
+# ========== 使用 Git LFS 管理大型資源 ==========
 *.fbx           filter=lfs diff=lfs merge=lfs -text
 *.obj           filter=lfs diff=lfs merge=lfs -text
 *.png           filter=lfs diff=lfs merge=lfs -text
@@ -52,16 +38,9 @@
 *.wav           filter=lfs diff=lfs merge=lfs -text
 *.mp4           filter=lfs diff=lfs merge=lfs -text
 *.webm          filter=lfs diff=lfs merge=lfs -text
-*.zip           filter=lfs diff=lfs merge=lfs -text
-*.tar.gz        filter=lfs diff=lfs merge=lfs -text
-*.tgz           filter=lfs diff=lfs merge=lfs -text
 *.unitypackage  filter=lfs diff=lfs merge=lfs -text
-# ---------- 🔒 特別指定 Firebase 原生插件使用 Git LFS ----------
-Assets/Firebase/Plugins/x86_64/FirebaseCppApp-12_8_0.* filter=lfs diff=lfs merge=lfs -text
-# ---------- ⛔ 忽略其他已知平台建構物（二進位包） ----------
-*.apk      binary
-*.ipa      binary
-*.aab      binary
-*.obb      binary
+*.zip           filter=lfs diff=lfs merge=lfs -text
+# 特定 Firebase 原生插件
+Assets/Firebase/Plugins/x86_64/* filter=lfs diff=lfs merge=lfs -text
 *.so filter=lfs diff=lfs merge=lfs -text
 *.bundle filter=lfs diff=lfs merge=lfs -text
