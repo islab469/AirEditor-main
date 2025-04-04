@@ -1,4 +1,31 @@
-# Auto detect text files and perform LF normalization
-* text=auto
-Assets/Firebase/Plugins/x86_64/FirebaseCppApp-12_3_0.bundle filter=lfs diff=lfs merge=lfs
-Assets/Firebase/Plugins/x86_64/FirebaseCppApp-12_3_0.so filter=lfs diff=lfs merge=lfs
+# 強制 Unity 專案文字檔使用 LF 換行
+*.cs     text eol=lf
+*.shader text eol=lf
+*.cginc  text eol=lf
+*.txt    text eol=lf
+*.asmdef text eol=lf
+*.json   text eol=lf
+*.xml    text eol=lf
+*.uxml   text eol=lf
+*.uss    text eol=lf
+*.yaml   text eol=lf
+*.yml    text eol=lf
+
+# 二進位檔案標示為 binary，避免被 Git 誤判可合併
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.psd binary
+*.fbx binary
+*.prefab binary
+*.unity binary
+*.mat binary
+*.mp3 binary
+*.ogg binary
+*.wav binary
+*.zip binary
+*.dll binary
+*.exe binary
+*.apk binary
+*.aab binary
+*.tgz filter=lfs diff=lfs merge=lfs -text
