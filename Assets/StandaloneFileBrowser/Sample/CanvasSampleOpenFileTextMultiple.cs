@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using SFB;
+using UnityEngine.Networking;
 
 [RequireComponent(typeof(Button))]
 public class CanvasSampleOpenFileTextMultiple : MonoBehaviour, IPointerDownHandler {
@@ -50,13 +51,25 @@ public class CanvasSampleOpenFileTextMultiple : MonoBehaviour, IPointerDownHandl
     }
 #endif
 
-    private IEnumerator OutputRoutine(string[] urlArr) {
+    private IEnumerator OutputRoutine(string[] urlArr)
+    {
         var outputText = "";
-        for (int i = 0; i < urlArr.Length; i++) {
-            var loader = new WWW(urlArr[i]);
-            yield return loader;
-            outputText += loader.text;
+        for (int i = 0; i < urlArr.Length; i++)
+        {
+            UnityWebRequest request = UnityWebRequest.Get(urlArr[i]);
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError($"❌ 檔案載入失敗：{urlArr[i]} | {request.error}");
+                outputText += $"[錯誤：{urlArr[i]}]\n";
+            }
+            else
+            {
+                outputText += request.downloadHandler.text + "\n";
+            }
         }
+
         output.text = outputText;
     }
 }

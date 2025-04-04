@@ -1,13 +1,11 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
-using System.Windows.Forms; 
-using Microsoft.Office.Interop.Word; 
-using System.Reflection;
-using Application = UnityEngine.Application;
+using Xceed.Words.NET;
+
 [System.Serializable]
 public class Question
 {
@@ -38,9 +36,8 @@ public class QScontent : MonoBehaviour
 
         if (!string.IsNullOrEmpty(selectedExam))
         {
-            print("selectedExam ¦³¸ê®Æ");
+            Debug.Log("selectedExam æœ‰è³‡æ–™");
             string filePath = localPath + selectedExam;
-
             string cloudModifiedTime = GetCloudModifiedTime(selectedExam);
 
             if (File.Exists(filePath))
@@ -49,19 +46,18 @@ public class QScontent : MonoBehaviour
 
                 if (string.Compare(cloudModifiedTime, localModifiedTime) > 0)
                 {
-                    print("ÀÉ®×¦³§ó·s¡A¤U¸ü·sÀÉ®×");
+                    Debug.Log("æª”æ¡ˆæœ‰æ›´æ–°ï¼Œä¸‹è¼‰æ–°æª”æ¡ˆ");
                     StartCoroutine(DownloadExam(selectedExam, uid));
                 }
                 else
                 {
-                    print("¥»¦aÀÉ®×");
-                    print(localModifiedTime);
+                    Debug.Log("ä½¿ç”¨æœ¬åœ°æª”æ¡ˆ");
                     LoadExam(filePath);
                 }
             }
             else
             {
-                print("¥»¦aµLÀÉ®×¡A¤U¸üÃD¥Ø");
+                Debug.Log("æœ¬åœ°ç„¡æª”æ¡ˆï¼Œä¸‹è¼‰é¡Œç›®");
                 StartCoroutine(DownloadExam(selectedExam, uid));
             }
         }
@@ -84,8 +80,9 @@ public class QScontent : MonoBehaviour
                 displayText += q.Title + "\n";
                 foreach (string option in q.Options)
                 {
-                    displayText += option + "\n";
+                    displayText += "- " + option + "\n";
                 }
+                displayText += "Ans: " + q.Ans + "\n";
                 displayText += "----------------------\n";
             }
             examText.text = displayText;
@@ -107,7 +104,7 @@ public class QScontent : MonoBehaviour
             }
             else
             {
-                examText.text = "¦Ò¨÷¤U¸ü¥¢±Ñ: " + request.error;
+                examText.text = "è€ƒå·ä¸‹è¼‰å¤±æ•—: " + request.error;
             }
         }
     }
@@ -129,49 +126,42 @@ public class QScontent : MonoBehaviour
         {
             if (file.filename == filename)
             {
-                print("¶³ºİ­×§ï®É¶¡");
-                print(file.modified_time);
                 return file.modified_time;
             }
         }
         return "2000-01-01 00:00:00";
     }
+
     public void ExportToWord()
     {
         if (examText == null || string.IsNullOrEmpty(examText.text))
         {
-            print("¨S¦³¦ÒÃD¥i¶×¥X");
+            Debug.Log("âŒ æ²’æœ‰è€ƒé¡Œå¯åŒ¯å‡º");
             return;
         }
 
-        SaveFileDialog saveFileDialog = new SaveFileDialog
-        {
-            Filter = "Word ¤å¥ó (*.docx)|*.docx",
-            Title = "¿ï¾Ü¶×¥XÀÉ®×¦ì¸m",
-            FileName = selectedExam
-        };
+        string fileName = string.IsNullOrEmpty(selectedExam) ? "QuizExport.docx" : selectedExam + ".docx";
+        string filePath = Path.Combine(Application.persistentDataPath, fileName);
 
-        if (saveFileDialog.ShowDialog() == DialogResult.OK)
-        {
-            string filePath = saveFileDialog.FileName;
-            SaveToWord(filePath);
-            print("¦ÒÃD¤w¶×¥X¦Ü¡G" + filePath);
-        }
+        SaveToWord(filePath);
+
+        Debug.Log("âœ… è€ƒé¡Œå·²åŒ¯å‡ºè‡³ï¼š" + filePath);
     }
 
     void SaveToWord(string filePath)
     {
-        Microsoft.Office.Interop.Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
-        Microsoft.Office.Interop.Word.Document wordDoc = wordApp.Documents.Add();
-
-        // ±N¦ÒÃD¤º®e¼g¤J Word
-        Microsoft.Office.Interop.Word.Paragraph para = wordDoc.Content.Paragraphs.Add();
-        para.Range.Text = examText.text;
-        para.Range.InsertParagraphAfter();
-
-        // Àx¦s Word ÀÉ®×
-        wordDoc.SaveAs2(filePath, Microsoft.Office.Interop.Word.WdSaveFormat.wdFormatDocumentDefault);
-        wordDoc.Close();
-        wordApp.Quit();
+        try
+        {
+            using (var doc = DocX.Create(filePath))
+            {
+                doc.InsertParagraph("ğŸ§  é¡Œç›®å…§å®¹").FontSize(18).Bold().SpacingAfter(15);
+                doc.InsertParagraph(examText.text).FontSize(14).SpacingAfter(10);
+                doc.Save();
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("âŒ åŒ¯å‡º Word å¤±æ•—ï¼š" + e.Message);
+        }
     }
 }

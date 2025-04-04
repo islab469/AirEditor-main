@@ -1,21 +1,17 @@
-# Unity 專案設定
+# ========== Unity 專案排除 ==========
+
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
 [Bb]uild/
 [Bb]uilds/
 [Ll]ogs/
-.vs/
-
 MemoryCaptures/
 UserSettings/
 
-# Rider
+# ========== IDE 和編譯器產物 ==========
+.vs/
 .idea/
-*.sln.iml
-
-# Visual Studio
-.vscode/
 *.csproj
 *.unityproj
 *.sln
@@ -28,27 +24,27 @@ UserSettings/
 *.svd
 *.pdb
 
-# Mac 系統垃圾檔
+# ========== 作業系統垃圾檔案 ==========
 .DS_Store
-
-# Windows 系統垃圾檔
 Thumbs.db
 desktop.ini
 
-# Unity 自動生成（可刪可不加）
+# ========== TextMesh Pro 範例 ==========
+Assets/TextMesh Pro/Examples & Extras/
+
+# ========== 外掛安裝包與大檔案（避免上傳） ==========
+Assets/Editor/Migration/com.ptc.vuforia.engine-11.0.4.tgz
+*.unitypackage
 *.apk
 *.aab
-*.unitypackage
+*.zip
 
-# Crash Reports
-sysinfo.txt
-
-# Auto-generated .meta 檔例外處理
+# ========== 保留 .meta 以追蹤空資料夾 ==========
 !Assets/**/*.meta
 !ProjectSettings/**/*.meta
 !Packages/**/*.meta
 
-# 不要忽略這些資料夾（即使是空的，也會因 .meta 檔案存在而需追蹤）
+# ========== 明確保留這些資料夾結構 ==========
 !Assets/
 !ProjectSettings/
 !Packages/
