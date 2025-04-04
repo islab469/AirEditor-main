@@ -79,6 +79,12 @@ public class SwitchPage : MonoBehaviour
         curnPage = Page.LENGTH;
         SceneManager.LoadScene(4); // 切換到 QAInterface 場景
     }
+    public void SwitchEditQuestion()
+    {
+        Debug.Log("call SwitchQAInterface");
+        SceneManager.LoadScene(6);
+    }
+
 
     private void Start()
     {

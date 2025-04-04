@@ -20,6 +20,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Game/Scenes/QAInterface.unity
     guid: 649984c88dc1ba242a53b934a0793ac6
+  - enabled: 1
+    path: Assets/Game/Scenes/QSInterface.unity
+    guid: 0aae96c1dfd68fe47a5c1fe5a84691c0
+  - enabled: 1
+    path: Assets/Game/Scenes/EditQuestion.unity
+    guid: a228773fc6c082444b55f074f1c85ffe
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: ad8470daa6e771940bd9d6c238b0736e, type: 2}
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 7d0dc815afbe7cf4aa57eb1657820fad, type: 2}

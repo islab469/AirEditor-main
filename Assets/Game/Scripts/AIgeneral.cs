@@ -5,34 +5,36 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 public class AIgeneral : MonoBehaviour
 {
     public TMP_InputField inputField; // 連接到 UI 的 Input Field
-
-    public TMP_Dropdown[] dropdowns = new TMP_Dropdown[3];
-    // 這個方法將被按鈕的 OnClick 事件調用
+    public TMP_InputField topicField;
+    
     public void getUserContent()
     {
         
         string content = inputField.text; // 獲取用戶輸入
-        
+        string topic = topicField.text;
+        int qtype = PlayerPrefs.GetInt("Qtype", 0);
+        string filename = PlayerPrefs.GetString("selected_file", "");
         // 檢查是否為空或 null
         if (string.IsNullOrEmpty(content))
         {
             Debug.Log("輸入內容為空，請輸入內容");
             return; // 如果為空，退出函數
         }
-        print(dropdowns[0].value);
+        
         // 使用 StartCoroutine 來啟動協程
-        StartCoroutine(UploadContent(content, dropdowns[0].value, dropdowns[1].value, dropdowns[2].value));
+        StartCoroutine(UploadContent(content,qtype,topic,filename));
 
         Debug.Log("getUserContent Called");
         
     }
 
     // 協程：上傳內容至指定的 URL
-    IEnumerator UploadContent(string content,int tf_count, int choose_count, int assay_count)
+    IEnumerator UploadContent(string content,int qtype,string topic, string filename)
     {
         string url = "http://127.0.0.1:8000/unitydata/upload_content/"; // 更改為你的上傳 API
         WWWForm form = new WWWForm(); // 創建新的表單
@@ -47,10 +49,10 @@ public class AIgeneral : MonoBehaviour
         }
 
         form.AddField("userid", id); // 添加用戶 ID 到表單
+        form.AddField("qtype", qtype);
+        form.AddField("topic",topic);
+        form.AddField("filename", filename);
         form.AddField("content", content); // 添加內容到表單
-        form.AddField("tf_count", tf_count);
-        form.AddField("choose_count", choose_count);
-        form.AddField("assay_count", assay_count);
         Debug.Log($"上傳的內容: {content}"); // 日誌輸出上傳內容
 
         using (UnityWebRequest www = UnityWebRequest.Post(url, form)) // 使用 POST 請求上傳
@@ -58,10 +60,21 @@ public class AIgeneral : MonoBehaviour
             // www.timeout = 10; // 可選：設定 10 秒超時
             yield return www.SendWebRequest(); // 發送請求並等待回應
 
-            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
+            if (www.result == UnityWebRequest.Result.Success)
             {
-                // 請求錯誤，輸出錯誤信息
-                Debug.LogError($"上傳錯誤: {www.error}\n回應: {www.downloadHandler.text}");
+                string jsonResponse = www.downloadHandler.text;
+                DjangoResponse response = JsonConvert.DeserializeObject<DjangoResponse>(jsonResponse);
+
+                // 清空靜態變數並存入新資料
+                QDBManager.FileList.Clear();
+                foreach (var file in response.files)
+                {
+                    QDBManager.FileList.Add(new QDBManager.FileData
+                    {
+                        filename = file.filename,
+                        modified_time = file.modified_time
+                    });
+                }
             }
             else
             {
@@ -70,5 +83,9 @@ public class AIgeneral : MonoBehaviour
                 SceneSystem.changeScene(SceneType.SCENE_AIQUESTION);
             }
         }
+    }
+    public class DjangoResponse
+    {
+        public List<QDBManager.FileData> files;
     }
 }

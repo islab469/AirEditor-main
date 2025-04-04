@@ -12,7 +12,6 @@ using System.Runtime.CompilerServices; // 引入 Firestore 命名空間
 public class FirebaseManager : MonoBehaviour
 {
     public static FirebaseManager Instance { get; private set; }
-
     public static FirebaseAuth auth; // Firebase 認證實例
     public static FirebaseFirestore firestore; // Firestore 參考
     public static FirebaseUser user; // 當前用戶
