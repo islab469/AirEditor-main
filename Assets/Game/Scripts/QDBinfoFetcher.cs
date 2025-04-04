@@ -1,36 +1,40 @@
-using System.Collections;
-using System.Collections.Generic;
-using Firebase.Firestore;
-using Newtonsoft.Json;
+using System;
+using System.Text;
+using System.Net.WebSockets;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
+using System.Collections;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 public class QDBinfoFetcher : MonoBehaviour
 {
-    
-    string url = "http://127.0.0.1:8000/unitydata/QDBinf/";
+    private ClientWebSocket ws;
+    private string userId;
+    private CancellationTokenSource cts = new CancellationTokenSource();
+    string apiUrl = "http://127.0.0.1:8000/unitydata/QDBinf/";
+
     void Start()
     {
-        
-        
         StartCoroutine(GetQDBinfo());
-        
-        print("QDBinfoFetcher work");
+        Debug.Log("QDBinfoFetcher started");
     }
+
     private IEnumerator GetQDBinfo()
     {
         while (FirebaseManager.getEmail() == null)
         {
-            print("Waiting for Firebase...");
             yield return new WaitForSeconds(0.5f);
         }
-        string uid = FirebaseManager.getEmail();
-        string jsonBody = JsonConvert.SerializeObject(new { uid = uid });
-        print($"Sending JSON: {jsonBody}");
-        
-        using (UnityWebRequest request = new UnityWebRequest(url, "POST"))
+
+        userId = FirebaseManager.getEmail();
+        string jsonBody = JsonConvert.SerializeObject(new { uid = userId });
+
+        using (UnityWebRequest request = new UnityWebRequest(apiUrl, "POST"))
         {
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
@@ -42,7 +46,6 @@ public class QDBinfoFetcher : MonoBehaviour
                 string jsonResponse = request.downloadHandler.text;
                 DjangoResponse response = JsonConvert.DeserializeObject<DjangoResponse>(jsonResponse);
 
-                // 清空靜態變數並存入新資料
                 QDBManager.FileList.Clear();
                 foreach (var file in response.files)
                 {
@@ -52,8 +55,7 @@ public class QDBinfoFetcher : MonoBehaviour
                         modified_time = file.modified_time
                     });
                 }
-
-                Debug.Log("Files received and stored.");
+                Debug.Log("Initial QDBinfo received.");
             }
             else
             {
@@ -61,9 +63,10 @@ public class QDBinfoFetcher : MonoBehaviour
             }
         }
     }
+
+
     public class DjangoResponse
     {
         public List<QDBManager.FileData> files;
     }
-
 }

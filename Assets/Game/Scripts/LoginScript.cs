@@ -1,5 +1,9 @@
 using UnityEngine;
 using TMPro;
+using System.Threading.Tasks;
+using UnityEngine.UI;
+
+
 
 public class LoginScript : MonoBehaviour
 {
@@ -45,27 +49,47 @@ public class LoginScript : MonoBehaviour
     }
 
     // 登入用戶的方法
+    [SerializeField] private GameObject loadingIndicator;
+    [SerializeField] private Text errorMessage;
+
     public async void Login()
     {
+        //loadingIndicator.SetActive(true); // 顯示 Loading 動畫
+        //errorMessage.text = ""; // 清空錯誤訊息
         FirebaseManager.checkAndStart();
+        try
+        {
+            await FirebaseManager.Login(inputEmail.text, inputPassword.text);
+            if (FirebaseManager.isLogin())
+            {
+                Debug.LogError("登入success");
+                loginPanel.SetActive(false);
+                updateEmailAndPassword();
+            }
+            else
+            {
+                errorMessage.text = "登入失敗，請檢查帳號密碼！";
+                Debug.LogError("登入失敗");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"登入錯誤: {e.Message}");
+
+        }
+        finally
+        {
+            //loadingIndicator.SetActive(false); // 隱藏 Loading 動畫
+        }
+        /*FirebaseManager.checkAndStart();
         await FirebaseManager.Login(inputEmail.text, inputPassword.text); // 調用 FirebaseManager 的登入方法
         updateEmailAndPassword();
         if (FirebaseManager.isLogin()){
             loginPanel.SetActive(false);
-        }
-
-
-
-
-
-
-
-
-
+        }*/
     }
     // 獲取當前用戶的電子郵件
     
-
     // 登出用戶的方法
     public void Logout(){
         FirebaseManager.checkAndStart();
