@@ -1,91 +1,108 @@
-using System.Collections;
 using UnityEngine;
-using TMPro;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Collections;
 
-public class AIgeneral : MonoBehaviour
+/// <summary>
+/// 上傳圖片與使用者資料至伺服器的處理類別
+/// </summary>
+public class ImageUploader : MonoBehaviour
 {
-    public TMP_InputField inputField; // 連接到 UI 的 Input Field
-    public TMP_InputField topicField;
-    
-    public void getUserContent()
-    {
-        
-        string content = inputField.text; // 獲取用戶輸入
-        string topic = topicField.text;
-        int qtype = PlayerPrefs.GetInt("Qtype", 0);
-        string filename = PlayerPrefs.GetString("selected_file", "");
-        // 檢查是否為空或 null
-        if (string.IsNullOrEmpty(content))
-        {
-            Debug.Log("輸入內容為空，請輸入內容");
-            return; // 如果為空，退出函數
-        }
-        
-        // 使用 StartCoroutine 來啟動協程
-        StartCoroutine(UploadContent(content,qtype,topic,filename));
+    private ImageManager imageManager;
+    private string imageName;
 
-        Debug.Log("getUserContent Called");
-        
+    private void Awake()
+    {
+        // 初始化 imageManager，確保元件存在於場景中
+        imageManager = FindObjectOfType<ImageManager>();
+        if (imageManager == null)
+        {
+            Debug.LogError("ImageManager not found. Please make sure it exists in the scene.");
+        }
     }
 
-    // 協程：上傳內容至指定的 URL
-    IEnumerator UploadContent(string content,int qtype,string topic, string filename)
+    /// <summary>
+    /// 呼叫此函式以開始上傳圖片與資訊
+    /// </summary>
+    public void Upload()
     {
-        string url = "http://127.0.0.1:8000/unitydata/upload_content/"; // 更改為你的上傳 API
-        WWWForm form = new WWWForm(); // 創建新的表單
-        
-        string id = FirebaseManager.getEmail(); // 獲取當前用戶的 email
+        imageName = PlayerPrefs.GetString("SelectedModel", "Dog");
+        string urlText = URLsave.url;
 
-        // 檢查 id 是否為 null
-        if (string.IsNullOrEmpty(id))
+        if (string.IsNullOrEmpty(urlText))
         {
-            Debug.LogError("用戶 ID 為空，無法上傳內容。");
-            yield break; // 如果 id 為空，退出協程
+            Debug.LogError("URL is empty. Please enter a valid URL.");
+            return;
         }
 
-        form.AddField("userid", id); // 添加用戶 ID 到表單
-        form.AddField("qtype", qtype);
-        form.AddField("topic",topic);
-        form.AddField("filename", filename);
-        form.AddField("content", content); // 添加內容到表單
-        Debug.Log($"上傳的內容: {content}"); // 日誌輸出上傳內容
-
-        using (UnityWebRequest www = UnityWebRequest.Post(url, form)) // 使用 POST 請求上傳
+        string email = FirebaseManager.GetEmail();
+        if (string.IsNullOrEmpty(email))
         {
-            // www.timeout = 10; // 可選：設定 10 秒超時
-            yield return www.SendWebRequest(); // 發送請求並等待回應
+            Debug.LogError("Email not available. Make sure user is logged in.");
+            return;
+        }
 
-            if (www.result == UnityWebRequest.Result.Success)
+        byte[] imageData = GetSpriteBytes();
+        if (imageData != null)
+        {
+            StartCoroutine(UploadFileCoroutine(imageData, urlText, email));
+        }
+    }
+
+    private byte[] GetSpriteBytes()
+    {
+        Sprite sprite = imageManager.GetCurrentSprite();
+        if (sprite == null)
+        {
+            Debug.LogError("No sprite available for upload.");
+            return null;
+        }
+
+        Texture2D texture = sprite.texture;
+        Texture2D readableTex = DeCompress(texture);
+        return readableTex.EncodeToPNG();
+    }
+
+    private IEnumerator UploadFileCoroutine(byte[] imageData, string urlText, string email)
+    {
+        string apiUrl = "http://127.0.0.1:8000/unitydata/upload_data/";
+        WWWForm form = new WWWForm();
+
+        form.AddBinaryData("image", imageData, imageName + ".png", "image/png");
+        form.AddField("url", urlText);
+        form.AddField("email", email);
+
+        using (UnityWebRequest www = UnityWebRequest.Post(apiUrl, form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
             {
-                string jsonResponse = www.downloadHandler.text;
-                DjangoResponse response = JsonConvert.DeserializeObject<DjangoResponse>(jsonResponse);
-
-                // 清空靜態變數並存入新資料
-                QDBManager.FileList.Clear();
-                foreach (var file in response.files)
-                {
-                    QDBManager.FileList.Add(new QDBManager.FileData
-                    {
-                        filename = file.filename,
-                        modified_time = file.modified_time
-                    });
-                }
+                Debug.LogError("Upload failed: " + www.error + "\nServer Response: " + www.downloadHandler.text);
             }
             else
             {
-                // 上傳成功，輸出回應信息
-                Debug.Log($"上傳完成！回應: {www.downloadHandler.text}");
-                SceneSystem.changeScene(SceneType.SCENE_AIQUESTION);
+                Debug.Log("Upload successful! Server Response: " + www.downloadHandler.text);
             }
         }
     }
-    public class DjangoResponse
+
+    public static Texture2D DeCompress(Texture2D source)
     {
-        public List<QDBManager.FileData> files;
+        RenderTexture renderTex = RenderTexture.GetTemporary(
+            source.width, source.height, 0,
+            RenderTextureFormat.Default, RenderTextureReadWrite.Linear);
+
+        Graphics.Blit(source, renderTex);
+        RenderTexture previous = RenderTexture.active;
+        RenderTexture.active = renderTex;
+
+        Texture2D readableTex = new Texture2D(source.width, source.height);
+        readableTex.ReadPixels(new Rect(0, 0, renderTex.width, renderTex.height), 0, 0);
+        readableTex.Apply();
+
+        RenderTexture.active = previous;
+        RenderTexture.ReleaseTemporary(renderTex);
+
+        return readableTex;
     }
 }

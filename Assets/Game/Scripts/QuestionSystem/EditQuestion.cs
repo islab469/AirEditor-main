@@ -9,7 +9,7 @@ using System.Text;
 
 public class EditQuestion : MonoBehaviour
 {
-    public TMP_InputField mainInput; // 只有一個輸入框
+    public TMP_InputField mainInput; // 單一輸入框
     public Button prevButton;
     public Button nextButton;
     public Button saveButton;
@@ -22,19 +22,23 @@ public class EditQuestion : MonoBehaviour
 
     void Start()
     {
-        localPath = Application.persistentDataPath + "/QDBFiles/";
+        // 準備路徑與資料
+        localPath = Path.Combine(Application.persistentDataPath, "QDBFiles");
         selectedExam = PlayerPrefs.GetString("selected_file", "");
-        LoadExam(localPath + selectedExam);
+        LoadExam(Path.Combine(localPath, selectedExam));
 
+        // 綁定按鈕事件
         prevButton.onClick.AddListener(PreviousQuestion);
         nextButton.onClick.AddListener(NextQuestion);
         saveButton.onClick.AddListener(SaveExam);
 
+        // 監聽輸入完成
         mainInput.onEndEdit.AddListener(UpdateQuestion);
 
         DisplayQuestion();
     }
 
+    // 載入 JSON 檔案成為 QuestionList
     void LoadExam(string filePath)
     {
         if (File.Exists(filePath))
@@ -42,61 +46,66 @@ public class EditQuestion : MonoBehaviour
             string content = File.ReadAllText(filePath);
             questionList = JsonUtility.FromJson<QuestionList>(content);
         }
+        else
+        {
+            Debug.LogWarning("Exam file not found at: " + filePath);
+        }
     }
 
+    // 顯示目前題目
     void DisplayQuestion()
     {
         if (questionList != null && questionList.Question.Count > 0)
         {
-            var currentQuestion = questionList.Question[currentIndex];
+            var q = questionList.Question[currentIndex];
 
-            // 將題目、選項、答案格式化為一個輸入框的內容
-            string formattedText = currentQuestion.Title + "\n";
-            for (int i = 0; i < currentQuestion.Options.Count; i++)
+            // 合併為輸入框字串
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine(q.Title);
+
+            for (int i = 0; i < q.Options.Count; i++)
             {
-                string optionText = currentQuestion.Options[i].Trim();
+                string option = q.Options[i].Trim();
+                char prefix = (char)('A' + i);
 
-                // 避免選項本來就有 "(A)" 這類前綴
-                if (!optionText.StartsWith("(A)") && !optionText.StartsWith("(B)") &&
-                    !optionText.StartsWith("(C)") && !optionText.StartsWith("(D)"))
+                if (!option.StartsWith("(A)") && !option.StartsWith("(B)") &&
+                    !option.StartsWith("(C)") && !option.StartsWith("(D)"))
                 {
-                    char optionChar = (char)('A' + i);
-                    optionText = $"({optionChar}) {optionText}";
+                    option = $"({prefix}) {option}";
                 }
 
-                formattedText += optionText + "\n";
+                builder.AppendLine(option);
             }
-            formattedText += currentQuestion.Ans;
 
-            mainInput.text = formattedText;
+            builder.Append(q.Ans);
+            mainInput.text = builder.ToString();
         }
     }
 
+    // 當修改輸入框後更新當前題目內容
     void UpdateQuestion(string newText)
     {
         if (questionList != null && questionList.Question.Count > 0)
         {
             var lines = newText.Split('\n');
-            if (lines.Length < 2) return; // 確保至少有題目和一個選項
+            if (lines.Length < 2) return;
 
-            var currentQuestion = questionList.Question[currentIndex];
+            var q = questionList.Question[currentIndex];
+            q.Title = lines[0].Trim();
+            q.Options.Clear();
 
-            currentQuestion.Title = lines[0]; // 第一行是題目
-            currentQuestion.Options.Clear();
-
-            for (int i = 1; i < lines.Length - 1; i++) // 中間幾行是選項
+            for (int i = 1; i < lines.Length - 1; i++)
             {
-                string optionText = lines[i].Trim();
-                if (!string.IsNullOrEmpty(optionText))
-                {
-                    currentQuestion.Options.Add(optionText);
-                }
+                string option = lines[i].Trim();
+                if (!string.IsNullOrEmpty(option))
+                    q.Options.Add(option);
             }
 
-            currentQuestion.Ans = lines[^1]; // 最後一行是答案
+            q.Ans = lines[^1].Trim();
         }
     }
 
+    // 上一題
     void PreviousQuestion()
     {
         if (currentIndex > 0)
@@ -106,6 +115,7 @@ public class EditQuestion : MonoBehaviour
         }
     }
 
+    // 下一題
     void NextQuestion()
     {
         if (currentIndex < questionList.Question.Count - 1)
@@ -115,41 +125,50 @@ public class EditQuestion : MonoBehaviour
         }
     }
 
+    // 儲存並上傳考卷
     void SaveExam()
     {
-        if (questionList == null) return;
+        if (questionList == null)
+        {
+            Debug.LogWarning("No question data to save.");
+            return;
+        }
 
-        string uid = FirebaseManager.getEmail();
+        string uid = FirebaseManager.GetEmail();
+        if (string.IsNullOrEmpty(uid))
+        {
+            Debug.LogWarning("No user logged in.");
+            return;
+        }
+
         string jsonData = JsonUtility.ToJson(questionList);
         string filename = selectedExam;
 
-        print("上傳考卷：" + filename);
+        Debug.Log("Uploading exam: " + filename);
         StartCoroutine(UploadExam(uid, filename, jsonData));
     }
 
+    // 發送 HTTP POST 上傳資料至 Django
     IEnumerator UploadExam(string uid, string filename, string jsonData)
     {
-
-        // 建立 JSON Payload
-        string jsonPayload = "{\"uid\":\"" + uid + "\", \"filename\":\"" + filename + "\", \"data\":" + jsonData + "}";
-
-        byte[] postData = Encoding.UTF8.GetBytes(jsonPayload);
+        string payload = $"{{\"uid\":\"{uid}\", \"filename\":\"{filename}\", \"data\":{jsonData}}}";
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(payload);
 
         using (UnityWebRequest request = new UnityWebRequest(djangoUrl, "POST"))
         {
-            request.uploadHandler = new UploadHandlerRaw(postData);
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");  // 設定 JSON Header
+            request.SetRequestHeader("Content-Type", "application/json");
 
             yield return request.SendWebRequest();
 
             if (request.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log("考卷更新成功！");
+                Debug.Log("Exam uploaded successfully.");
             }
             else
             {
-                Debug.LogError("考卷更新失敗: " + request.error);
+                Debug.LogError("Exam upload failed: " + request.error);
             }
         }
     }

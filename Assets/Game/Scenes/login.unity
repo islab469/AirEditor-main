@@ -1717,13 +1717,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4f2b126c06cf214b83509bccb06e81a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputEmail: {fileID: 0}
-  inputPassword: {fileID: 0}
-  textEmail: {fileID: 0}
-  loginPanel: {fileID: 0}
-  debugMode: 0
-  loadingIndicator: {fileID: 0}
-  errorMessage: {fileID: 0}
+  emailInput: {fileID: 0}
+  passwordInput: {fileID: 0}
+  statusText: {fileID: 0}
 --- !u!1 &1643731809
 GameObject:
   m_ObjectHideFlags: 0
@@ -2189,7 +2185,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75aac7578e249a14f8ab07efd6e03aaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LogOutpanel: {fileID: 0}
 --- !u!114 &1967574943
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2670,7 +2665,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1967574942}
         m_TargetAssemblyTypeName: LogOutScript, Assembly-CSharp
-        m_MethodName: TurnToLogOut
+        m_MethodName: OnLogout
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

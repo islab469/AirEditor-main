@@ -1,12 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Firebase;
 using Firebase.Firestore;
 using System.Threading.Tasks;
 using Firebase.Extensions;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System;
 
@@ -15,148 +13,130 @@ public class AnswerClick : MonoBehaviour
     private FirebaseFirestore db;
     private DocumentReference docRef;
 
-    // 文本元
+    // 12 個原始句子（正確與錯誤）
     public TextMeshProUGUI[] textObj_arr = new TextMeshProUGUI[12];
 
-    // 選擇題
+    // 4 個答案區塊
     public TextMeshProUGUI[] textAns_arr = new TextMeshProUGUI[4];
 
-    // 當前要填充的 textAns_arr 索引
-    private int currentAnsIndex = 0; // 起始值為 0
+    // 當前要填入的答案區塊索引
+    private int currentAnsIndex = 0;
 
-    // 用來顯示選擇答案的文本
+    // 顯示問題與答案的元件
     public TextMeshProUGUI QuestionAndAnswer;
-    public Dictionary<string, string> data = new Dictionary<string, string>();
+
+    // 假資料用的除錯旗標
     [SerializeField]
     private bool is_debugging = true;
 
-
-
-    private List<object> createTestList(string frontval,int maxval) {
-
-        List<object> strs = new List<object>();
-        for (int i = 0; i < maxval; i++) {
-            strs.Add(frontval + " "  + maxval.ToString());
+    // 產生測試資料
+    private List<object> CreateTestList(string prefix, int count)
+    {
+        List<object> results = new List<object>();
+        for (int i = 0; i < count; i++)
+        {
+            results.Add($"{prefix} {i + 1}");
         }
-        return strs;
+        return results;
     }
+
     private async void Start()
     {
         const int q_count = 6;
-        Dictionary<string, object> doc = new Dictionary<string, object>{
-            { "truthes",createTestList("TRUTH", q_count)},
-            { "falses",createTestList("FALSE", q_count)}
+
+        Dictionary<string, object> doc = new Dictionary<string, object>
+        {
+            { "truthes", CreateTestList("TRUTH", q_count) },
+            { "falses", CreateTestList("FALSE", q_count) }
         };
+
+        // 連接 Firebase Firestore
         if (!is_debugging)
         {
-            //MainScene.check_and_instantiate();
-            string user = FirebaseManager.getEmail();
-            // 初始化 Firebase
+            string user = FirebaseManager.GetEmail();
             db = FirebaseFirestore.DefaultInstance;
-            //docRef = db.Collection("AIContent").Document(User);
-            doc = await GetUserDocument(user);  // 調用函數來取回數據
+            doc = await GetUserDocument(user);
         }
 
-        //Load the object from firebase 
-        List<object> truthesList = doc["truthes"] as List<object>;
-        List<object> falsesList = doc["falses"] as List<object>;
+        List<object> truthesList = doc.ContainsKey("truthes") ? doc["truthes"] as List<object> : null;
+        List<object> falsesList = doc.ContainsKey("falses") ? doc["falses"] as List<object> : null;
 
+        // 填入正確句子
         if (truthesList != null)
         {
-            // 將每個元素轉換為字串並合併
-            string truthesStr = String.Join("。", truthesList.Select(item => item.ToString()));
-            truthesStr = truthesStr.Replace("\n", "").Replace("\n", "");
-            string[] truthes = truthesStr.Split("。");
-            print(truthes.Length);
-            print(textObj_arr.Length);
-            print(gameObject.name);
+            string[] truthes = string.Join("。", truthesList.Select(t => t.ToString()))
+                .Replace("\n", "")
+                .Replace("\r", "")
+                .Split("。", StringSplitOptions.RemoveEmptyEntries);
 
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < Mathf.Min(6, truthes.Length); i++)
             {
-                //#ERR
                 textObj_arr[i].text = truthes[i];
             }
         }
         else
         {
-            Debug.Log("truthes 不是 List<object> 類型");
+            Debug.LogWarning("Missing or invalid 'truthes' list from Firestore.");
         }
 
+        // 填入錯誤句子
         if (falsesList != null)
         {
-            // 將每個元素轉換為字串並合併
+            string[] falses = string.Join("。", falsesList.Select(f => f.ToString()))
+                .Replace("\n", "")
+                .Replace("\r", "")
+                .Split("。", StringSplitOptions.RemoveEmptyEntries);
 
-            string falsesStr = String.Join("。", falsesList.Select(item => item.ToString()));
-            falsesStr = falsesStr.Replace("\n", "").Replace("\r", "");
-            string[] falses = falsesStr.Split("。");
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < Mathf.Min(6, falses.Length); i++)
             {
-                textObj_arr[i+6].text = falses[i];
+                textObj_arr[i + 6].text = falses[i];
             }
-            // 顯示合併後的字串
         }
         else
         {
-            Debug.Log("truthes 不是 List<object> 類型");
+            Debug.LogWarning("Missing or invalid 'falses' list from Firestore.");
         }
-
-
-
-        //for (int i = 0; i < textObj_arr.Length; i++)
-        //{
-        //    textObj_arr[i].text = 
-        //    Debug.Log(strs[i]);
-        //}
-
     }
 
+    // 從 Firestore 取得使用者資料
     private async Task<Dictionary<string, object>> GetUserDocument(string userId)
     {
-        
-        // 指向 Firestore 的 AIContent 集合內的 userId 文檔
+        db ??= FirebaseFirestore.DefaultInstance;
+
         DocumentReference docRef = db.Collection("AIContent").Document(userId);
-     
-        Dictionary<string, object> documentData = new Dictionary<string, object>();
-
-
         DocumentSnapshot snapshot = await docRef.GetSnapshotAsync();
+
         if (snapshot.Exists)
         {
-            // 取出文檔的數據，並將其轉換為字典
-            documentData = snapshot.ToDictionary();
-
+            return snapshot.ToDictionary();
         }
-
-
-        return documentData;
+        else
+        {
+            Debug.LogError("Document not found for user: " + userId);
+            return new Dictionary<string, object>();
+        }
     }
 
-    // 用來在按鈕點擊後讀取文本並顯示的函數
+    // 當點擊某一答案選項時執行
     public void OnAnswerClick(int answerIndex)
     {
-        // 檢查索引是否在範圍內
         if (answerIndex >= 0 && answerIndex < textObj_arr.Length)
         {
-            // 獲取選中的文本
             string selectedText = textObj_arr[answerIndex].text;
 
-            // 檢查 textAns_arr 是否還有未填入的文本
             if (currentAnsIndex < textAns_arr.Length)
             {
-                // 將選中的文本複製到 textAns_arr 的當前索引
                 textAns_arr[currentAnsIndex].text = selectedText;
-
-                // 更新索引，準備下一次點擊
                 currentAnsIndex++;
             }
             else
             {
-                Debug.LogWarning("All answer slots are filled.");
+                Debug.LogWarning("All answer slots are already filled.");
             }
         }
         else
         {
-            Debug.LogError("Index is out of bounds: " + answerIndex);
+            Debug.LogError("Invalid answer index: " + answerIndex);
         }
     }
 }

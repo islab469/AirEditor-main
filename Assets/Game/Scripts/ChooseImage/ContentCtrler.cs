@@ -24,7 +24,7 @@ public class ContentC : MonoBehaviour
 
     void LoadImage()
     {
-        string email = FirebaseManager.getEmail();
+        string email = FirebaseManager.GetEmail();
 
         if (string.IsNullOrEmpty(email))
         {
