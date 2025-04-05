@@ -37,3 +37,6 @@ desktop.ini
 !Packages/**/*.meta
 !ProjectSettings/**/*.meta
 !*/.gitkeep
+# ========== 忽略手動放進來的 Firebase SDK ==========
+Assets/Firebase/Plugins/**/*.so
+Assets/Firebase/Plugins/**/*.bundle
