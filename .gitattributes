@@ -1,46 +1,17 @@
-# ========== 統一文字換行（使用 LF） ==========
-*.cs       text eol=lf
-*.js       text eol=lf
-*.shader   text eol=lf
-*.cginc    text eol=lf
-*.txt      text eol=lf
-*.json     text eol=lf
-*.xml      text eol=lf
-*.yaml     text eol=lf
-*.yml      text eol=lf
-*.asmdef   text eol=lf
-*.meta     text eol=lf
-*.asset    text eol=lf
-*.unity    text eol=lf
-*.uxml     text eol=lf
-*.uss      text eol=lf
-*.md       text eol=lf
-*.sh       text eol=lf
-*.py       text eol=lf
-# ========== 二進位檔案 ==========
-*.dll      binary
-*.exe      binary
-*.so       binary
-*.a        binary
-*.lib      binary
-*.pdb      binary
-*.bin      binary
-*.jar      binary
-# ========== 使用 Git LFS 管理大型資源 ==========
-*.fbx           filter=lfs diff=lfs merge=lfs -text
-*.obj           filter=lfs diff=lfs merge=lfs -text
-*.png           filter=lfs diff=lfs merge=lfs -text
-*.jpg           filter=lfs diff=lfs merge=lfs -text
-*.jpeg          filter=lfs diff=lfs merge=lfs -text
-*.psd           filter=lfs diff=lfs merge=lfs -text
-*.mp3           filter=lfs diff=lfs merge=lfs -text
-*.wav           filter=lfs diff=lfs merge=lfs -text
-*.mp4           filter=lfs diff=lfs merge=lfs -text
-*.webm          filter=lfs diff=lfs merge=lfs -text
-*.unitypackage  filter=lfs diff=lfs merge=lfs -text
-*.zip           filter=lfs diff=lfs merge=lfs -text
-# 特定 Firebase 原生插件
-Assets/Firebase/Plugins/x86_64/* filter=lfs diff=lfs merge=lfs -text
+# Force LF line endings
+*.cs text eol=lf
+*.shader text eol=lf
+*.json text eol=lf
+*.meta text eol=lf
+*.unity text eol=lf
+*.asset text eol=lf
+
+# Git LFS for large binary files
+*.fbx filter=lfs diff=lfs merge=lfs -text
 *.blend filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.wav filter=lfs diff=lfs merge=lfs -text
 *.so filter=lfs diff=lfs merge=lfs -text
 *.bundle filter=lfs diff=lfs merge=lfs -text

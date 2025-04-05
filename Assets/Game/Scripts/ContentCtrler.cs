@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Firebase.Firestore;
@@ -25,12 +25,19 @@ public class ContentC : MonoBehaviour
     void LoadImage()
     {
         string email = FirebaseManager.getEmail();
+
+        if (string.IsNullOrEmpty(email))
+        {
+            Debug.LogError("âŒ FirebaseManager.getEmail() å›å‚³ç©ºå€¼ï¼Œç„¡æ³•é€£æ¥ Firestore Documentï¼");
+            return;
+        }
+
         db.Collection("users").Document(email).Collection("uploads").GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsCompleted)
             {
                 QuerySnapshot snapshot = task.Result;
-                print("§ä¨ìn­Ó¤W¶Çªº¹Ï¤ù¤å¥ó");
+                print("æ‰¾åˆ°nå€‹ä¸Šå‚³çš„åœ–ç‰‡æ–‡ä»¶");
                 foreach (DocumentSnapshot document in snapshot.Documents)
                 {
                     if (document.Exists)
@@ -39,7 +46,7 @@ public class ContentC : MonoBehaviour
                         if (data.ContainsKey("image_url"))
                         {
                             string imageUrl = data["image_url"].ToString();
-                            Debug.Log("§ä¨ì¹Ï¤ù URL¡G" + imageUrl);
+                            Debug.Log("æ‰¾åˆ°åœ–ç‰‡ URLï¼š" + imageUrl);
                             CreatePrefab(imageUrl);
                         }
                     }
@@ -47,7 +54,7 @@ public class ContentC : MonoBehaviour
             }
             else
             {
-                Debug.LogError("Firestore Åª¨ú¥¢±Ñ¡G" + task.Exception);
+                Debug.LogError("Firestore è®€å–å¤±æ•—ï¼š" + task.Exception);
             }
         });
 
@@ -56,14 +63,14 @@ public class ContentC : MonoBehaviour
     void CreatePrefab(string imageUrl)
     {
         GameObject newProjectPrefab = Instantiate(projectPrefab, content);
-        Debug.Log("¦¨¥\¥Í¦¨ Prefab ¨Ã¥[¤J ScrollView");
+        Debug.Log("æˆåŠŸç”Ÿæˆ Prefab ä¸¦åŠ å…¥ ScrollView");
         Button button = newProjectPrefab.GetComponentInChildren<Button>();
         if (button != null)
         {
             button.onClick.AddListener(() => OnPrefabClicked(imageUrl));
         }
 
-        // ¦b Prefab ¤º§ä¨ì Image ²Õ¥ó¡A¨Ã³z¹L URL ¸ü¤J¹Ï¤ù
+        // åœ¨ Prefab å…§æ‰¾åˆ° Image çµ„ä»¶ï¼Œä¸¦é€é URL è¼‰å…¥åœ–ç‰‡
         Image imageComponent = newProjectPrefab.GetComponent<Image>();
         if (imageComponent != null)
         {
@@ -71,7 +78,7 @@ public class ContentC : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Prefab ¨S¦³ Image ²Õ¥ó¡A½ĞÀË¬d Prefab µ²ºc");
+            Debug.LogError("Prefab æ²’æœ‰ Image çµ„ä»¶ï¼Œè«‹æª¢æŸ¥ Prefab çµæ§‹");
         }
         MoveAddButtonToEnd();
     }
@@ -95,18 +102,18 @@ public class ContentC : MonoBehaviour
             }
             else
             {
-                Debug.LogError("¹Ï¤ù¸ü¤J¥¢±Ñ¡G" + request.error);
+                Debug.LogError("åœ–ç‰‡è¼‰å…¥å¤±æ•—ï¼š" + request.error);
             }
         }
     }
     void MoveAddButtonToEnd()
     {
-        // §ä¨ì¥[¸¹«ö¶s
-        Transform addButton = content.Find("Image"); // ½T«O¥[¸¹«ö¶sªº¦WºÙ¬O "AddButton"
+        // æ‰¾åˆ°åŠ è™ŸæŒ‰éˆ•
+        Transform addButton = content.Find("Image"); // ç¢ºä¿åŠ è™ŸæŒ‰éˆ•çš„åç¨±æ˜¯ "AddButton"
 
         if (addButton != null)
         {
-            addButton.SetAsLastSibling(); // ²¾°Ê¨ì³Ì«á¤@­Ó
+            addButton.SetAsLastSibling(); // ç§»å‹•åˆ°æœ€å¾Œä¸€å€‹
         }
     }
 

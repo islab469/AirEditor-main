@@ -1,4 +1,5 @@
-# ========== Unity 專案排除 ==========
+# ========== Unity project ==========
+
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
@@ -7,41 +8,32 @@
 [Ll]ogs/
 MemoryCaptures/
 UserSettings/
-.crash/
 
-# ========== IDE 編譯器產物 ==========
+# ========== IDE & Compiler junk ==========
 .vs/
 .idea/
 *.csproj
-*.unityproj
 *.sln
-*.suo
-*.tmp
 *.user
-*.userprefs
 *.pidb
-*.booproj
-*.svd
 *.pdb
+*.tmp
+*.suo
 
-# ========== 作業系統垃圾檔 ==========
+# ========== System files ==========
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# ========== Firebase / 外部套件 ==========
-Assets/Editor/Migration/com.ptc.vuforia.engine-*.tgz
-Assets/External/FirebaseSDK.unitypackage
+# ========== Packages & large binaries ==========
+*.apk
+*.aab
+*.unitypackage
+*.zip
+*.tgz
 
-# ========== TextMesh Pro 範例 ==========
-Assets/TextMesh Pro/Examples & Extras/
-
-# ========== 保留空資料夾的 .meta ==========
+# ========== Keep .meta files tracked ==========
 !Assets/**/*.meta
-!ProjectSettings/**/*.meta
 !Packages/**/*.meta
-
-# ========== 明確保留 ==========
-!Assets/
-!ProjectSettings/
-!Packages/
+!ProjectSettings/**/*.meta
+!*/.gitkeep
