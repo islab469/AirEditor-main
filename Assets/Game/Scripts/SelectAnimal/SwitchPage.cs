@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SwitchPage : MonoBehaviour
@@ -32,9 +32,9 @@ public class SwitchPage : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    public void SwitchToChooseImage()
+    public void SwitchToCreateProjecte()
     {
-        Debug.Log("📂 Switching to Choose Image scene");
+        Debug.Log("📂 Switching to Create Project scene");
         curnPage = Page.LENGTH;
         SceneManager.LoadScene(1);
     }

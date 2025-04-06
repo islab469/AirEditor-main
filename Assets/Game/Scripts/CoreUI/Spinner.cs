@@ -1,6 +1,4 @@
-﻿using Firebase;
 using Firebase.Firestore;
-using Firebase.Extensions;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -12,37 +10,32 @@ public class Spinner : MonoBehaviour
     [SerializeField]
     private TMP_Dropdown dropdown;
 
-    // Firestore 實例
     private FirebaseFirestore firestore;
 
     private void Start()
     {
-        // 初始化 Firebase
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+        if (dropdown == null)
         {
-            if (task.Result == DependencyStatus.Available)
-            {
-                FirebaseApp app = FirebaseApp.DefaultInstance;
-                firestore = FirebaseFirestore.GetInstance(app);
-                Debug.Log("Firebase initialized successfully.");
-                StartCoroutine(GetOptionsFromFirestore());
-            }
-            else
-            {
-                Debug.LogError($"Firebase initialization failed: {task.Result}");
-            }
-        });
+            Debug.LogError("Dropdown is not assigned in the Inspector.");
+            return;
+        }
 
-        // 下拉選單事件綁定
+        // 直接取得 Firebase Firestore 實例（不需再初始化 Firebase）
+        firestore = FirebaseFirestore.DefaultInstance;
+
+        // 開始抓選項
+        StartCoroutine(GetOptionsFromFirestore());
+
+        // 綁定選單變更事件
         dropdown.onValueChanged.AddListener(OnDropdownValueChanged);
     }
 
     /// <summary>
-    /// 從 Firestore 取得所有上傳資料
+    /// 從 Firestore 抓選項資料
     /// </summary>
     private IEnumerator GetOptionsFromFirestore()
     {
-        string collectionPath = "uploads"; // Firestore 資料集合
+        string collectionPath = "uploads";
 
         CollectionReference optionsRef = firestore.Collection(collectionPath);
         var getOptionsTask = optionsRef.GetSnapshotAsync();
@@ -56,7 +49,6 @@ public class Spinner : MonoBehaviour
         else
         {
             QuerySnapshot snapshot = getOptionsTask.Result;
-
             List<string> options = new List<string>();
 
             foreach (DocumentSnapshot document in snapshot.Documents)
@@ -68,12 +60,17 @@ public class Spinner : MonoBehaviour
                 }
             }
 
+            if (options.Count == 0)
+            {
+                Debug.LogWarning("No valid image_url data found in Firestore.");
+            }
+
             UpdateDropdownOptions(options);
         }
     }
 
     /// <summary>
-    /// 將選項加入下拉選單
+    /// 更新下拉選單顯示
     /// </summary>
     private void UpdateDropdownOptions(List<string> options)
     {
@@ -89,14 +86,21 @@ public class Spinner : MonoBehaviour
     }
 
     /// <summary>
-    /// 當選擇變更時觸發的事件
+    /// 下拉選單選項變更時切換場景
     /// </summary>
     private void OnDropdownValueChanged(int index)
     {
-        string selectedOption = dropdown.options[index].text;
-        Debug.Log($"Selected dropdown option: {selectedOption}");
+        if (index >= 0 && index < dropdown.options.Count)
+        {
+            string selectedOption = dropdown.options[index].text;
+            Debug.Log($"Selected dropdown option: {selectedOption}");
 
-        // 切換到第 7 號場景（請依實際場景調整）
-        SceneManager.LoadScene(7);
+            // TODO: 可用 PlayerPrefs 傳遞選擇結果
+            SceneManager.LoadScene(7);
+        }
+        else
+        {
+            Debug.LogWarning("Dropdown index out of range.");
+        }
     }
 }

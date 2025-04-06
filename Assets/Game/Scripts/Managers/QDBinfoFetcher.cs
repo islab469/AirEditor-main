@@ -15,7 +15,7 @@ public class QDBinfoFetcher : MonoBehaviour
     private string userId;
     private CancellationTokenSource cts = new CancellationTokenSource();
 
-    // Django «áºÝ API ºÝÂI
+    // Django ï¿½ï¿½ï¿½ API ï¿½ï¿½ï¿½I
     private string apiUrl = "http://127.0.0.1:8000/unitydata/QDBinf/";
 
     void Start()
@@ -25,11 +25,11 @@ public class QDBinfoFetcher : MonoBehaviour
     }
 
     /// <summary>
-    /// µo°e POST ½Ð¨D¨ì Django API¡A¨ú±o¥Ø«e¨Ï¥ÎªÌªºÀÉ®×²M³æ
+    /// ï¿½oï¿½e POST ï¿½Ð¨Dï¿½ï¿½ Django APIï¿½Aï¿½ï¿½ï¿½oï¿½Ø«eï¿½Ï¥ÎªÌªï¿½ï¿½É®×²Mï¿½ï¿½
     /// </summary>
     private IEnumerator FetchQDBInfo()
     {
-        // µ¥«Ý Firebase µn¤J¦¨¥\¡AÀò¨ú email
+        // ï¿½ï¿½ï¿½ï¿½ Firebase ï¿½nï¿½Jï¿½ï¿½ï¿½\ï¿½Aï¿½ï¿½ï¿½ email
         while (string.IsNullOrEmpty(FirebaseManager.GetEmail()))
         {
             yield return new WaitForSeconds(0.5f);
@@ -42,21 +42,21 @@ public class QDBinfoFetcher : MonoBehaviour
             yield break;
         }
 
-        // «Ø¥ß JSON ½Ð¨D¤º®e
+        // ï¿½Ø¥ï¿½ JSON ï¿½Ð¨Dï¿½ï¿½ï¿½e
         string jsonBody = JsonConvert.SerializeObject(new { uid = userId });
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
 
-        // ³]©w UnityWebRequest ¨Ãªþ¥[ Header
+        // ï¿½]ï¿½w UnityWebRequest ï¿½Ãªï¿½ï¿½[ Header
         using (UnityWebRequest request = new UnityWebRequest(apiUrl, "POST"))
         {
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
 
-            // µo°e½Ð¨D
+            // ï¿½oï¿½eï¿½Ð¨D
             yield return request.SendWebRequest();
 
-            // ³B²z¦^À³
+            // ï¿½Bï¿½zï¿½^ï¿½ï¿½
             if (request.result == UnityWebRequest.Result.Success)
             {
                 try
@@ -103,7 +103,7 @@ public class QDBinfoFetcher : MonoBehaviour
     }
 
     /// <summary>
-    /// Django «áºÝ¶Ç¦^ªº¸ê®Æ®æ¦¡
+    /// Django ï¿½ï¿½Ý¶Ç¦^ï¿½ï¿½ï¿½ï¿½Æ®æ¦¡
     /// </summary>
     public class DjangoResponse
     {
