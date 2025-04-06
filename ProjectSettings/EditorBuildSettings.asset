@@ -27,9 +27,9 @@ EditorBuildSettings:
     path: Assets/Game/Scenes/EditQuestion.unity
     guid: a228773fc6c082444b55f074f1c85ffe
   m_configObjects:
-    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: ad8470daa6e771940bd9d6c238b0736e, type: 2}
-    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 7d0dc815afbe7cf4aa57eb1657820fad, type: 2}
-    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: b5d394ef69f9d3348b08456dbd7ae968, type: 2}
-    com.unity.xr.magicleap.magic_leap_settings: {fileID: 11400000, guid: 5b8c315442bdaae41ae4b650a912ee40, type: 2}
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: e6eee29ca8863924eae5f2943d02a642, type: 2}
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 1d76136f5752d4040bc01c1c1180221e, type: 2}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: c5dbef06a8f92de42b29448b260a1abc, type: 2}
+    com.unity.xr.magicleap.magic_leap_settings: {fileID: 11400000, guid: cfffbcb2b555a0a478f40221ff8ec5cf, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: e261dbc25e6fd83498007d2551164f7f, type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 1622314f2c8527440931d1f30130b508, type: 2}
