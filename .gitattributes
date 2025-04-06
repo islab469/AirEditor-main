@@ -1,17 +1,50 @@
-# Force LF line endings
-*.cs text eol=lf
-*.shader text eol=lf
-*.json text eol=lf
-*.meta text eol=lf
-*.unity text eol=lf
-*.asset text eol=lf
+# =====================================
+# 🚀 Unity 專案推薦 .gitattributes 設定
+# =====================================
 
-# Git LFS for large binary files
-*.fbx filter=lfs diff=lfs merge=lfs -text
-*.blend filter=lfs diff=lfs merge=lfs -text
-*.png filter=lfs diff=lfs merge=lfs -text
-*.jpg filter=lfs diff=lfs merge=lfs -text
-*.mp4 filter=lfs diff=lfs merge=lfs -text
-*.wav filter=lfs diff=lfs merge=lfs -text
-*.so filter=lfs diff=lfs merge=lfs -text
-*.bundle filter=lfs diff=lfs merge=lfs -text
+# ---------- 強制使用 LF 換行 ----------
+*.cs       text eol=lf
+*.shader   text eol=lf
+*.json     text eol=lf
+*.xml      text eol=lf
+*.txt      text eol=lf
+*.meta     text eol=lf
+*.unity    text eol=lf
+*.asset    text eol=lf
+*.asmdef   text eol=lf
+*.uxml     text eol=lf
+*.uss      text eol=lf
+*.md       text eol=lf
+*.yml      text eol=lf
+*.yaml     text eol=lf
+
+# ---------- 保護腳本類與組態檔 ----------
+*.py       text eol=lf
+*.sh       text eol=lf
+*.bat      text eol=crlf
+
+# ---------- Binary 檔案避免轉換 ----------
+*.dll      binary
+*.exe      binary
+*.lib      binary
+*.pdb      binary
+
+# ---------- 使用 Git LFS 處理大檔 ----------
+*.fbx            filter=lfs diff=lfs merge=lfs -text
+*.blend          filter=lfs diff=lfs merge=lfs -text
+*.png            filter=lfs diff=lfs merge=lfs -text
+*.jpg            filter=lfs diff=lfs merge=lfs -text
+*.jpeg           filter=lfs diff=lfs merge=lfs -text
+*.psd            filter=lfs diff=lfs merge=lfs -text
+*.mp3            filter=lfs diff=lfs merge=lfs -text
+*.wav            filter=lfs diff=lfs merge=lfs -text
+*.mp4            filter=lfs diff=lfs merge=lfs -text
+*.webm           filter=lfs diff=lfs merge=lfs -text
+*.zip            filter=lfs diff=lfs merge=lfs -text
+*.unitypackage   filter=lfs diff=lfs merge=lfs -text
+*.so             filter=lfs diff=lfs merge=lfs -text
+*.bundle         filter=lfs diff=lfs merge=lfs -text
+
+# Firebase Plugin 特例
+Assets/Firebase/Plugins/x86_64/FirebaseCppApp-*.so       filter=lfs diff=lfs merge=lfs -text
+Assets/Firebase/Plugins/x86_64/FirebaseCppApp-*.bundle   filter=lfs diff=lfs merge=lfs -text

@@ -6,6 +6,9 @@ using Firebase.Firestore;
 using System.Threading.Tasks;
 using Firebase.Extensions;
 using FirestoreModels;
+using Firebase;
+using System;
+using System.Text.RegularExpressions;
 
 public class FirebaseManager : MonoBehaviour
 {
@@ -38,7 +41,7 @@ public class FirebaseManager : MonoBehaviour
         if (PanelSelection != null) PanelSelection.SetActive(false);
     }
 
-    // 初始化 Firebase 認證與 Firestore
+    // 初始化 Firebase
     public static void InitializeFirebase()
     {
         if (auth != null) return;
@@ -56,58 +59,62 @@ public class FirebaseManager : MonoBehaviour
         Debug.Log("Firebase initialized successfully.");
     }
 
-    // 註冊新帳號
-    public static async Task<bool> Register(string email, string password)
+    public static async Task<string> Login(string email, string password)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+                return "Email or password cannot be empty.";
+
+            AuthResult ar = await auth.SignInWithEmailAndPasswordAsync(email, password);
+            Debug.Log("Login successful: " + ar.User.Email);
+            return "success";
+        }
+        catch (FirebaseException fe)
+        {
+            return "Login failed: " + fe.Message;
+        }
+        catch (Exception ex)
+        {
+            return "Login failed: " + ex.Message;
+        }
+    }
+
+    public static async Task<string> Register(string email, string password)
     {
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
-        {
-            Debug.LogWarning("Register failed: Email or password is empty.");
-            return false;
-        }
+            return "Email or password cannot be empty.";
+
+        if (!Regex.IsMatch(password, @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$"))
+            return "Password must include uppercase, lowercase, digit, and special character (min 8 chars).";
 
         try
         {
-            await auth.CreateUserWithEmailAndPasswordAsync(email, password);
+            AuthResult authResult = await auth.CreateUserWithEmailAndPasswordAsync(email, password);
             await WriteUserToFirestore(email, "New User");
-            Debug.Log("User registered and stored in Firestore.");
-            return true;
+            return "success";
         }
-        catch (System.Exception e)
+        catch (FirebaseException fe)
         {
-            Debug.LogError("Register failed: " + e.Message);
-            return false;
+            if (fe.Message.Contains("email-already-in-use"))
+                return "email-already-in-use";
+            return "Registration failed: " + fe.Message;
+        }
+        catch (Exception ex)
+        {
+            return "Registration failed: " + ex.Message;
         }
     }
 
-    // 登入功能
-    public static async Task<bool> Login(string email, string password)
-    {
-        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
-        {
-            Debug.LogWarning("Login failed: Email or password is empty.");
-            return false;
-        }
 
-        try
-        {
-            await auth.SignInWithEmailAndPasswordAsync(email, password);
-            Debug.Log("Login success: " + email);
-            return true;
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError("Login failed: " + ex.Message);
-            return false;
-        }
-    }
 
-    // 登出功能
+    // 登出
     public static void Logout()
     {
         auth.SignOut();
     }
 
-    // 認證狀態監控
+    // Firebase 狀態改變事件（登入/登出 UI 切換）
     private static void AuthStateChanged(object sender, System.EventArgs eventArgs)
     {
         if (auth.CurrentUser != user)
@@ -129,15 +136,9 @@ public class FirebaseManager : MonoBehaviour
         }
     }
 
-    // 寫入 Firestore 用戶資料
+    // 將用戶資料寫入 Firestore
     public static async Task WriteUserToFirestore(string email, string displayName)
     {
-        if (firestore == null)
-        {
-            Debug.LogError("Firestore is null. Cannot write data.");
-            return;
-        }
-
         var newUser = new UserModel(email, displayName);
         var docRef = firestore.Collection("users").Document(email);
 
@@ -152,15 +153,27 @@ public class FirebaseManager : MonoBehaviour
         }
     }
 
-    // 取得當前登入者的 email
-    public static string GetEmail()
-    {
-        return user != null ? user.Email : null;
-    }
+    // 回傳登入的 Email
+    public static string GetEmail() => user?.Email;
 
-    // 檢查是否登入中
-    public static bool IsLoggedIn()
+    // 是否已登入
+    public static bool IsLoggedIn() => auth != null && auth.CurrentUser != null;
+
+    // 驗證密碼是否含有特殊符號
+    private static bool HasSpecialChar(string input) => System.Text.RegularExpressions.Regex.IsMatch(input, @"[!@#$%^&*(),.?""{}|<>]");
+
+    // 錯誤解析
+    private static string ParseFirebaseError(FirebaseException fe)
     {
-        return auth != null && auth.CurrentUser != null;
+        var errorCode = ((AuthError)fe.ErrorCode).ToString();
+        switch (errorCode)
+        {
+            case "InvalidEmail": return "Invalid email format.";
+            case "WrongPassword": return "Incorrect password.";
+            case "EmailAlreadyInUse": return "Email is already registered.";
+            case "UserNotFound": return "User not found.";
+            case "WeakPassword": return "Password is too weak.";
+            default: return $"Firebase error: {errorCode}";
+        }
     }
 }

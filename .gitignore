@@ -1,5 +1,4 @@
-# ========== Unity project ==========
-
+# ========== Unity Generated Folders ==========
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
@@ -9,34 +8,40 @@
 MemoryCaptures/
 UserSettings/
 
-# ========== IDE & Compiler junk ==========
+# ========== Rider / VS / VS Code ==========
 .vs/
 .idea/
 *.csproj
+*.unityproj
 *.sln
-*.user
-*.pidb
-*.pdb
-*.tmp
 *.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
 
-# ========== System files ==========
+# ========== Operating System Files ==========
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# ========== Packages & large binaries ==========
+# ========== Package Manager ==========
+*.unitypackage
+*.tgz
+*.zip
 *.apk
 *.aab
-*.unitypackage
-*.zip
-*.tgz
 
-# ========== Keep .meta files tracked ==========
+# ========== Git LFS 管理大型資源（由 .gitattributes 控制） ==========
+# 不需在這裡排除，由 LFS 管理即可
+
+# ========== Firebase SDK（避免大型原生檔案佔版控） ==========
+Assets/Firebase/Plugins/**/*.so
+Assets/Firebase/Plugins/**/*.bundle
+
+# ========== 保留必要 .meta（空資料夾追蹤） ==========
 !Assets/**/*.meta
 !Packages/**/*.meta
 !ProjectSettings/**/*.meta
 !*/.gitkeep
-# ========== 忽略手動放進來的 Firebase SDK ==========
-Assets/Firebase/Plugins/**/*.so
-Assets/Firebase/Plugins/**/*.bundle

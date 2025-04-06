@@ -1,104 +1,102 @@
-using Firebase;
+ï»¿using Firebase;
 using Firebase.Firestore;
 using Firebase.Extensions;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement; // ¥[¤J³õ´ººŞ²zªº©R¦WªÅ¶¡
+using UnityEngine.SceneManagement;
 
 public class Spinner : MonoBehaviour
 {
     [SerializeField]
     private TMP_Dropdown dropdown;
 
-    // Firestore °Ñ¦Ò
+    // Firestore å¯¦ä¾‹
     private FirebaseFirestore firestore;
 
     private void Start()
     {
-        // ªì©l¤Æ Firebase
+        // åˆå§‹åŒ– Firebase
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
         {
-            if (task.Result == Firebase.DependencyStatus.Available)
+            if (task.Result == DependencyStatus.Available)
             {
                 FirebaseApp app = FirebaseApp.DefaultInstance;
                 firestore = FirebaseFirestore.GetInstance(app);
-                Debug.Log("Firebase ªì©l¤Æ¦¨¥\");
+                Debug.Log("Firebase initialized successfully.");
                 StartCoroutine(GetOptionsFromFirestore());
             }
             else
             {
-                Debug.LogError($"Firebase ªì©l¤Æ¥¢±Ñ: {task.Result}");
+                Debug.LogError($"Firebase initialization failed: {task.Result}");
             }
         });
 
-        // ºÊÅ¥¤U©Ô¿ï³æÅÜ¤Æ
+        // ä¸‹æ‹‰é¸å–®äº‹ä»¶ç¶å®š
         dropdown.onValueChanged.AddListener(OnDropdownValueChanged);
     }
 
+    /// <summary>
+    /// å¾ Firestore å–å¾—æ‰€æœ‰ä¸Šå‚³è³‡æ–™
+    /// </summary>
     private IEnumerator GetOptionsFromFirestore()
     {
-        // Firestore ¸ô®|
-        string collectionPath = "uploads"; // Firestore ¤¤¦sÀx¿ï¶µªº¶°¦X¦W
+        string collectionPath = "uploads"; // Firestore è³‡æ–™é›†åˆ
 
-        // ¶}©l±q Firestore ¤¤§ì¨ú¸ê®Æ
         CollectionReference optionsRef = firestore.Collection(collectionPath);
         var getOptionsTask = optionsRef.GetSnapshotAsync();
 
-        // µ¥«İ Firestore §¹¦¨¸ê®ÆÀò¨ú
         yield return new WaitUntil(() => getOptionsTask.IsCompleted);
 
         if (getOptionsTask.Exception != null)
         {
-            Debug.LogError("±q Firestore Àò¨ú¸ê®Æ®É¥X²{¿ù»~: " + getOptionsTask.Exception);
+            Debug.LogError("Error fetching data from Firestore: " + getOptionsTask.Exception);
         }
         else
         {
-            // ±q Firestore Àò¨ú¨ì¸ê®Æ
             QuerySnapshot snapshot = getOptionsTask.Result;
 
-            // ±N Firestore ¤¤ªº¸ê®ÆÂà´«¬° List<string>
             List<string> options = new List<string>();
 
             foreach (DocumentSnapshot document in snapshot.Documents)
             {
-                if (document.Exists)
+                if (document.Exists && document.ContainsField("image_url"))
                 {
-                    // °²³]¨C­Ó¤åÀÉ¤¤¦³¤@­Ó "image_url" ¦r¬q
                     string option = document.GetValue<string>("image_url");
                     options.Add(option);
                 }
             }
 
-            // §ó·s¤U©Ô¿ï³æ¿ï¶µ
             UpdateDropdownOptions(options);
         }
     }
 
+    /// <summary>
+    /// å°‡é¸é …åŠ å…¥ä¸‹æ‹‰é¸å–®
+    /// </summary>
     private void UpdateDropdownOptions(List<string> options)
     {
-        // ²MªÅ·í«e¿ï¶µ
         dropdown.options.Clear();
 
-        // ²K¥[°ÊºA¿ï¶µ
         foreach (string option in options)
         {
             dropdown.options.Add(new TMP_Dropdown.OptionData(option));
         }
 
-        // ³]¸mÀq»{¿ï¶µ
         dropdown.value = 0;
         dropdown.RefreshShownValue();
     }
 
+    /// <summary>
+    /// ç•¶é¸æ“‡è®Šæ›´æ™‚è§¸ç™¼çš„äº‹ä»¶
+    /// </summary>
     private void OnDropdownValueChanged(int index)
     {
-        // ®Ú¾Ú¿ï¤¤ªº¿ï¶µ¶i¦æ¾Ş§@
         string selectedOption = dropdown.options[index].text;
-        Debug.Log($"¿ï¤¤ªº¿ï¶µ: {selectedOption}");
+        Debug.Log($"Selected dropdown option: {selectedOption}");
 
-        // ´À´«¬°¹ïÀ³ªº³õ´º¦WºÙ
+        // åˆ‡æ›åˆ°ç¬¬ 7 è™Ÿå ´æ™¯ï¼ˆè«‹ä¾å¯¦éš›å ´æ™¯èª¿æ•´ï¼‰
         SceneManager.LoadScene(7);
     }
 }
