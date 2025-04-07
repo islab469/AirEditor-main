@@ -12,9 +12,6 @@ EditorBuildSettings:
     path: Assets/Game/Scenes/CreateProject.unity
     guid: e628e1d5f98288a4692dc2ea014a2301
   - enabled: 1
-    path: Assets/Game/Scenes/AIQA.unity
-    guid: 76962a3c418f31f4bb57a833383081e9
-  - enabled: 1
     path: Assets/Game/Scenes/ProjectInterface.unity
     guid: d16f37d0e67bc6c48aee54b1f5a90502
   - enabled: 1

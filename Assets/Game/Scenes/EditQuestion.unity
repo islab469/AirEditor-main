@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 200776628}
   - component: {fileID: 200776627}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Undo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -158,7 +158,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 329.64838, y: 141.07014}
-  m_SizeDelta: {x: 43.3423, y: 36.6495}
+  m_SizeDelta: {x: 80, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &200776627
 MonoBehaviour:
@@ -1763,8 +1763,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e8bbf2602d84dc4d99cabb90d1f9805, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dogModel: {fileID: 0}
-  catModel: {fileID: 0}
 --- !u!1 &1958191050
 GameObject:
   m_ObjectHideFlags: 0

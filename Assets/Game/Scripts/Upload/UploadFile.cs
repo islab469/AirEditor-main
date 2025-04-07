@@ -3,7 +3,7 @@ using UnityEngine.Networking;
 using System.Collections;
 
 /// <summary>
-/// ¤W¶Ç¹Ï¤ù»P¨Ï¥ÎªÌ¸ê®Æ¦Ü¦øªA¾¹ªº³B²zÃþ§O
+/// ï¿½Wï¿½Ç¹Ï¤ï¿½ï¿½Pï¿½Ï¥ÎªÌ¸ï¿½Æ¦Ü¦ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½Bï¿½zï¿½ï¿½ï¿½O
 /// </summary>
 public class UploadFile : MonoBehaviour
 {
@@ -12,7 +12,7 @@ public class UploadFile : MonoBehaviour
 
     private void Awake()
     {
-        // ªì©l¤Æ imageManager¡A½T«O¤¸¥ó¦s¦b©ó³õ´º¤¤
+        // ï¿½ï¿½lï¿½ï¿½ imageManagerï¿½Aï¿½Tï¿½Oï¿½ï¿½ï¿½ï¿½sï¿½bï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         imageManager = FindObjectOfType<ImageManager>();
         if (imageManager == null)
         {
@@ -21,14 +21,14 @@ public class UploadFile : MonoBehaviour
     }
 
     /// <summary>
-    /// ©I¥s¦¹¨ç¦¡¥H¶}©l¤W¶Ç¹Ï¤ù»P¸ê°T
+    /// ï¿½Iï¿½sï¿½ï¿½ï¿½ç¦¡ï¿½Hï¿½}ï¿½lï¿½Wï¿½Ç¹Ï¤ï¿½ï¿½Pï¿½ï¿½T
     /// </summary>
     public void Upload()
     {
-        // ±q PlayerPrefs ¨ú±o¨Ï¥ÎªÌ¿ï¾Üªº¹Ï¤ù¦WºÙ
+        // ï¿½q PlayerPrefs ï¿½ï¿½ï¿½oï¿½Ï¥ÎªÌ¿ï¿½Üªï¿½ï¿½Ï¤ï¿½ï¿½Wï¿½ï¿½
         imageName = PlayerPrefs.GetString("SelectedModel", "Dog");
 
-        // ¨ú±o¨Ï¥ÎªÌ¿é¤Jªº URL
+        // ï¿½ï¿½ï¿½oï¿½Ï¥ÎªÌ¿ï¿½Jï¿½ï¿½ URL
         string urlText = URLsave.url;
 
         if (string.IsNullOrEmpty(urlText))
@@ -37,7 +37,7 @@ public class UploadFile : MonoBehaviour
             return;
         }
 
-        // ¨ú±oµn¤Jªº email
+        // ï¿½ï¿½ï¿½oï¿½nï¿½Jï¿½ï¿½ email
         string email = FirebaseManager.GetEmail();
         if (string.IsNullOrEmpty(email))
         {
@@ -45,7 +45,7 @@ public class UploadFile : MonoBehaviour
             return;
         }
 
-        // °õ¦æ¹Ï¤ùÂ^¨ú¨Ã±Ò°Ê¤W¶Ç¨óµ{
+        // ï¿½ï¿½ï¿½ï¿½Ï¤ï¿½ï¿½^ï¿½ï¿½ï¿½Ã±Ò°Ê¤Wï¿½Ç¨ï¿½{
         byte[] imageData = GetSpriteBytes();
         if (imageData != null)
         {
@@ -54,7 +54,7 @@ public class UploadFile : MonoBehaviour
     }
 
     /// <summary>
-    /// Â^¨ú·í«e Sprite ¨ÃÂà¬° PNG ®æ¦¡ byte[]
+    /// ï¿½^ï¿½ï¿½ï¿½ï¿½e Sprite ï¿½ï¿½ï¿½à¬° PNG ï¿½æ¦¡ byte[]
     /// </summary>
     private byte[] GetSpriteBytes()
     {
@@ -71,7 +71,7 @@ public class UploadFile : MonoBehaviour
     }
 
     /// <summary>
-    /// ¤W¶Ç¹Ï¤ù»P¸ê®Æ¦Ü«áºÝ¦øªA¾¹
+    /// ï¿½Wï¿½Ç¹Ï¤ï¿½ï¿½Pï¿½ï¿½Æ¦Ü«ï¿½Ý¦ï¿½ï¿½Aï¿½ï¿½
     /// </summary>
     private IEnumerator UploadFileCoroutine(byte[] imageData, string urlText, string email)
     {
@@ -98,7 +98,7 @@ public class UploadFile : MonoBehaviour
     }
 
     /// <summary>
-    /// ¸ÑÀ£­ì©l¹Ï¤ù¡A¨Ï¨ä¦¨¬°¥iÅª®æ¦¡
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½lï¿½Ï¤ï¿½ï¿½Aï¿½Ï¨ä¦¨ï¿½ï¿½ï¿½iÅªï¿½æ¦¡
     /// </summary>
     public static Texture2D DeCompress(Texture2D source)
     {

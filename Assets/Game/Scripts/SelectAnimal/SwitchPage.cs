@@ -3,72 +3,63 @@ using UnityEngine.SceneManagement;
 
 public class SwitchPage : MonoBehaviour
 {
-    public static Page curnPage = Page.LENGTH;
+    public static Page currentPage = Page.NONE;
 
     public enum Page
     {
-        MODEL,
-        LENGTH
-    }
-
-    public void SwitchToCreateProject()
-    {
-        Debug.Log("🔁 Switching to Create Project scene");
-        curnPage = Page.LENGTH;
-        SceneSystem.changeScene(SceneType.SCENE_CREATE_PROJECT);
-    }
-
-    public void SwitchToUploadImage()
-    {
-        Debug.Log("🖼️ Switching to Upload Image scene");
-        curnPage = Page.LENGTH;
-        SceneSystem.changeScene(SceneType.SCENE_CHOOSE_IMAGE);
+        NONE,
+        LOGIN,
+        CREATE_PROJECT,
+        PROJECT_INTERFACE,
+        QA_INTERFACE,
+        QS_INTERFACE,
+        EDIT_QUESTION
     }
 
     public void SwitchToLogin()
     {
         Debug.Log("🔐 Switching to Login scene");
-        curnPage = Page.LENGTH;
+        currentPage = Page.LOGIN;
         SceneManager.LoadScene(0);
     }
 
-    public void SwitchToCreateProjecte()
+    public void SwitchToCreateProject()
     {
         Debug.Log("📂 Switching to Create Project scene");
-        curnPage = Page.LENGTH;
+        currentPage = Page.CREATE_PROJECT;
         SceneManager.LoadScene(1);
-    }
-
-    public void SwitchToAIQA()
-    {
-        Debug.Log("🤖 Switching to AI QA scene");
-        curnPage = Page.LENGTH;
-        SceneManager.LoadScene(2);
     }
 
     public void SwitchToProjectInterface()
     {
         Debug.Log("📁 Switching to Project Interface scene");
-        curnPage = Page.LENGTH;
-        SceneManager.LoadScene(3);
+        currentPage = Page.PROJECT_INTERFACE;
+        SceneManager.LoadScene(2);
     }
 
     public void SwitchToQAInterface()
     {
         Debug.Log("📝 Switching to QA Interface scene");
-        curnPage = Page.LENGTH;
+        currentPage = Page.QA_INTERFACE;
+        SceneManager.LoadScene(3);
+    }
+
+    public void SwitchToQSInterface()
+    {
+        Debug.Log("📊 Switching to QS Interface scene");
+        currentPage = Page.QS_INTERFACE;
         SceneManager.LoadScene(4);
     }
 
     public void SwitchToEditQuestion()
     {
         Debug.Log("✏️ Switching to Edit Question scene");
-        SceneManager.LoadScene(6);
+        currentPage = Page.EDIT_QUESTION;
+        SceneManager.LoadScene(5);
     }
 
     private void Start()
     {
-        Debug.Log($"🚩 Current Page: {curnPage}");
-        // 不需要執行模型相關邏輯
+        Debug.Log($"🚩 Current Page: {currentPage}");
     }
 }
