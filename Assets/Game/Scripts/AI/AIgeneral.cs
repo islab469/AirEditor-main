@@ -1,108 +1,91 @@
-using UnityEngine;
-using UnityEngine.Networking;
 using System.Collections;
+using UnityEngine;
+using TMPro;
+using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
-/// <summary>
-/// �W�ǹϤ��P�ϥΪ̸�Ʀܦ��A�����B�z���O
-/// </summary>
-public class ImageUploader : MonoBehaviour
+public class AIgeneral : MonoBehaviour
 {
-    private ImageManager imageManager;
-    private string imageName;
+    public TMP_InputField inputField; // 連接到 UI 的 Input Field
+    public TMP_InputField topicField;
 
-    private void Awake()
+    public void getUserContent()
     {
-        // ��l�� imageManager�A�T�O����s�b�������
-        imageManager = FindObjectOfType<ImageManager>();
-        if (imageManager == null)
+
+        string content = inputField.text; // 獲取用戶輸入
+        string topic = topicField.text;
+        int qtype = PlayerPrefs.GetInt("Qtype", 0);
+        string filename = PlayerPrefs.GetString("selected_file", "");
+        // 檢查是否為空或 null
+        if (string.IsNullOrEmpty(content))
         {
-            Debug.LogError("ImageManager not found. Please make sure it exists in the scene.");
+            Debug.Log("輸入內容為空，請輸入內容");
+            return; // 如果為空，退出函數
         }
+
+        // 使用 StartCoroutine 來啟動協程
+        StartCoroutine(UploadContent(content, qtype, topic, filename));
+
+        Debug.Log("getUserContent Called");
+
     }
 
-    /// <summary>
-    /// �I�s���禡�H�}�l�W�ǹϤ��P��T
-    /// </summary>
-    public void Upload()
+    // 協程：上傳內容至指定的 URL
+    IEnumerator UploadContent(string content, int qtype, string topic, string filename)
     {
-        imageName = PlayerPrefs.GetString("SelectedModel", "Dog");
-        string urlText = URLsave.url;
+        string url = "http://127.0.0.1:8000/unitydata/upload_content/"; // 更改為你的上傳 API
+        WWWForm form = new WWWForm(); // 創建新的表單
 
-        if (string.IsNullOrEmpty(urlText))
+        string id = FirebaseManager.GetEmail(); // 獲取當前用戶的 email
+
+        // 檢查 id 是否為 null
+        if (string.IsNullOrEmpty(id))
         {
-            Debug.LogError("URL is empty. Please enter a valid URL.");
-            return;
+            Debug.LogError("用戶 ID 為空，無法上傳內容。");
+            yield break; // 如果 id 為空，退出協程
         }
 
-        string email = FirebaseManager.GetEmail();
-        if (string.IsNullOrEmpty(email))
+        form.AddField("userid", id); // 添加用戶 ID 到表單
+        form.AddField("qtype", qtype);
+        form.AddField("topic", topic);
+        form.AddField("filename", filename);
+        form.AddField("content", content); // 添加內容到表單
+        Debug.Log($"上傳的內容: {content}"); // 日誌輸出上傳內容
+
+        using (UnityWebRequest www = UnityWebRequest.Post(url, form)) // 使用 POST 請求上傳
         {
-            Debug.LogError("Email not available. Make sure user is logged in.");
-            return;
-        }
+            // www.timeout = 10; // 可選：設定 10 秒超時
+            yield return www.SendWebRequest(); // 發送請求並等待回應
 
-        byte[] imageData = GetSpriteBytes();
-        if (imageData != null)
-        {
-            StartCoroutine(UploadFileCoroutine(imageData, urlText, email));
-        }
-    }
-
-    private byte[] GetSpriteBytes()
-    {
-        Sprite sprite = imageManager.GetCurrentSprite();
-        if (sprite == null)
-        {
-            Debug.LogError("No sprite available for upload.");
-            return null;
-        }
-
-        Texture2D texture = sprite.texture;
-        Texture2D readableTex = DeCompress(texture);
-        return readableTex.EncodeToPNG();
-    }
-
-    private IEnumerator UploadFileCoroutine(byte[] imageData, string urlText, string email)
-    {
-        string apiUrl = "http://127.0.0.1:8000/unitydata/upload_data/";
-        WWWForm form = new WWWForm();
-
-        form.AddBinaryData("image", imageData, imageName + ".png", "image/png");
-        form.AddField("url", urlText);
-        form.AddField("email", email);
-
-        using (UnityWebRequest www = UnityWebRequest.Post(apiUrl, form))
-        {
-            yield return www.SendWebRequest();
-
-            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
+            if (www.result == UnityWebRequest.Result.Success)
             {
-                Debug.LogError("Upload failed: " + www.error + "\nServer Response: " + www.downloadHandler.text);
+                string jsonResponse = www.downloadHandler.text;
+                DjangoResponse response = JsonConvert.DeserializeObject<DjangoResponse>(jsonResponse);
+
+                // 清空靜態變數並存入新資料
+                QDBManager.FileList.Clear();
+                foreach (var file in response.files)
+                {
+                    QDBManager.FileList.Add(new QDBManager.FileData
+                    {
+                        filename = file.filename,
+                        modified_time = file.modified_time
+                    });
+                }
             }
             else
             {
-                Debug.Log("Upload successful! Server Response: " + www.downloadHandler.text);
+                // 上傳成功，輸出回應信息
+                Debug.Log($"上傳完成！回應: {www.downloadHandler.text}");
+                SceneSystem.changeScene(SceneType.SCENE_AIQUESTION);
             }
         }
     }
-
-    public static Texture2D DeCompress(Texture2D source)
+    public class DjangoResponse
     {
-        RenderTexture renderTex = RenderTexture.GetTemporary(
-            source.width, source.height, 0,
-            RenderTextureFormat.Default, RenderTextureReadWrite.Linear);
-
-        Graphics.Blit(source, renderTex);
-        RenderTexture previous = RenderTexture.active;
-        RenderTexture.active = renderTex;
-
-        Texture2D readableTex = new Texture2D(source.width, source.height);
-        readableTex.ReadPixels(new Rect(0, 0, renderTex.width, renderTex.height), 0, 0);
-        readableTex.Apply();
-
-        RenderTexture.active = previous;
-        RenderTexture.ReleaseTemporary(renderTex);
-
-        return readableTex;
+        public List<QDBManager.FileData> files;
     }
 }

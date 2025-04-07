@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -77,7 +77,7 @@ public class QuestionLoader : MonoBehaviour
     {
         Debug.Log($"Opening file: {filename}");
         PlayerPrefs.SetString("selected_file", filename);  // 記住選擇的檔案
-        SceneManager.LoadScene(5);
+        SceneManager.LoadScene(4);
     }
     void GeneratePrefabs()
     {

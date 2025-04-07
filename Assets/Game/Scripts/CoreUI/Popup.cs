@@ -6,18 +6,18 @@ using UnityEngine.UI;
 
 public class Popup : MonoBehaviour
 {
-    public GameObject popupPanel; // «ü©w Panel
+    public GameObject popupPanel; // æŒ‡å®š Panel
     public Button button1;
     public Button button2;
     public Button button3;
-    public Button closeButton; // ·s¼W¤@­ÓÃö³¬«ö¶s
+    public Button closeButton; // æ–°å¢ä¸€å€‹é—œé–‰æŒ‰éˆ•
 
     void Start()
     {
-        // ½T«O­±ªO¤@¶}©l¬OÁôÂÃªº
+        // ç¢ºä¿é¢æ¿ä¸€é–‹å§‹æ˜¯éš±è—çš„
         popupPanel.SetActive(false);
 
-        // ¸j©w«ö¶s¨Æ¥ó
+        // ç¶å®šæŒ‰éˆ•äº‹ä»¶
         closeButton.onClick.AddListener(ClosePopup);
         button1.onClick.AddListener(SwitchToGenTF);
         button2.onClick.AddListener(SwitchToGenChoose);
@@ -35,19 +35,19 @@ public class Popup : MonoBehaviour
     void SwitchToGenTF()
     {
         PlayerPrefs.SetInt("Qtype", 0);
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(7);
     }
 
     void SwitchToGenChoose()
     {
         PlayerPrefs.SetInt("Qtype", 2);
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(7);
     }
 
     void SwitchToGenAssay()
     {
         PlayerPrefs.SetInt("Qtype", 4);
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(7);
     }
 
 }

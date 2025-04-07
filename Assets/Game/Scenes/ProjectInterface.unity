@@ -159,8 +159,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.028}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.0036926, y: -0.000010967}
-  m_SizeDelta: {x: 1469, y: 782}
+  m_AnchoredPosition: {x: 0.0082092, y: -0.00012207}
+  m_SizeDelta: {x: 1919.5, y: 1080.9}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &106424478
 MonoBehaviour:
@@ -396,7 +396,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 174261053}
         m_TargetAssemblyTypeName: SwitchPage, Assembly-CSharp
-        m_MethodName: SwitchLogin
+        m_MethodName: SwitchToLobby
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -524,7 +524,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1782503252}
   m_HandleRect: {fileID: 1782503251}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -616,12 +616,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -644,8 +644,8 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 25
+  m_VertexColorAlwaysGammaSpace: 1
+  m_AdditionalShaderChannelsFlag: 1
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -868,9 +868,9 @@ RectTransform:
   m_Father: {fileID: 873408088}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 734.5, y: 389.25}
-  m_SizeDelta: {x: 1469, y: 778.5}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1156970459
 MonoBehaviour:
@@ -1131,7 +1131,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.00006756539}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1549015735
@@ -1147,7 +1147,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   content: {fileID: 1549015734}
-  projectPrefab: {fileID: 202213635450587136, guid: 40417e5362c63144d869b65dcecce958, type: 3}
+  projectPrefab: {fileID: 1840419584}
 --- !u!114 &1549015736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1168,8 +1168,8 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 100, y: 100}
-  m_Spacing: {x: 20, y: 20}
+  m_CellSize: {x: 250, y: 250}
+  m_Spacing: {x: 50, y: 50}
   m_Constraint: 1
   m_ConstraintCount: 8
 --- !u!1 &1782503250
@@ -1247,6 +1247,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1782503250}
   m_CullTransparentMesh: 1
+--- !u!1 &1840419584 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 202213635450587136, guid: 40417e5362c63144d869b65dcecce958, type: 3}
+  m_PrefabInstance: {fileID: 6696626909847150352}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6696626909847150352
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1257,7 +1262,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 202213635450587136, guid: 40417e5362c63144d869b65dcecce958, type: 3}
       propertyPath: m_Name
-      value: Image
+      value: Create
       objectReference: {fileID: 0}
     - target: {fileID: 4619027130822195711, guid: 40417e5362c63144d869b65dcecce958, type: 3}
       propertyPath: m_Pivot.x
@@ -1357,7 +1362,7 @@ PrefabInstance:
       objectReference: {fileID: 174261053}
     - target: {fileID: 5097433945186446506, guid: 40417e5362c63144d869b65dcecce958, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SwitchChooseImage
+      value: SwitchToCreateProject
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -957,7 +957,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab63cc0673c0c7f44bc0fff73cde447c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  examText: {fileID: 0}
+  examText: {fileID: 1483612954}
 --- !u!1 &697928440
 GameObject:
   m_ObjectHideFlags: 0
@@ -1583,8 +1583,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 766, y: -23}
-  m_SizeDelta: {x: 250, y: 75}
+  m_AnchoredPosition: {x: 769, y: 119}
+  m_SizeDelta: {x: 300, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &991879770
 MonoBehaviour:
@@ -1632,7 +1632,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 623104179}
         m_TargetAssemblyTypeName: SwitchPage, Assembly-CSharp
-        m_MethodName: SwitchEditQuestion
+        m_MethodName: SwitchToEditQuestion
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1717,8 +1717,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -203.15, y: -0.00738}
-  m_SizeDelta: {x: 1567.4, y: 1050.7}
+  m_AnchoredPosition: {x: -189.7623, y: 0.016021}
+  m_SizeDelta: {x: 1540.535, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1108846985
 MonoBehaviour:
@@ -2359,7 +2359,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.16470589, g: 0.16470589, b: 0.16470589, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2443,7 +2443,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1488046669
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2751,8 +2751,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 764, y: -144}
-  m_SizeDelta: {x: 250, y: 75}
+  m_AnchoredPosition: {x: 767, y: -2}
+  m_SizeDelta: {x: 300, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1697154923
 MonoBehaviour:
@@ -3002,10 +3002,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 246154815}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 285, y: 140.57}
-  m_SizeDelta: {x: 26, y: 26}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -74.133, y: -57}
+  m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1811211060
 MonoBehaviour:
@@ -3053,7 +3053,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 623104179}
         m_TargetAssemblyTypeName: SwitchPage, Assembly-CSharp
-        m_MethodName: SwitchLogin
+        m_MethodName: SwitchToLobby
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3231,8 +3231,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 762, y: -279}
-  m_SizeDelta: {x: 250, y: 75}
+  m_AnchoredPosition: {x: 765, y: -137}
+  m_SizeDelta: {x: 300, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2113407344
 MonoBehaviour:

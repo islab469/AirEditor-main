@@ -1,0 +1,122 @@
+列出資料夾 PATH
+磁碟區序號為 44E8-3CBD
+C:.
+│  AI.meta
+│  App.meta
+│  AR.meta
+│  Auth.meta
+│  ChooseImage.meta
+│  CoreUI.meta
+│  DepthEffect.meta
+│  Managers.meta
+│  Models.meta
+│  Network.meta
+│  QuestionSystem.meta
+│  SelectAnimal.meta
+│  structure.txt
+│  unity_project_structure.txt.meta
+│  Upload.meta
+│  Utils.meta
+│  
+├─AI
+│      AIgeneral.cs
+│      AIgeneral.cs.meta
+│      
+├─App
+│      SceneSystem.cs
+│      SceneSystem.cs.meta
+│      
+├─AR
+│      ARCameraController.cs
+│      ARCameraController.cs.meta
+│      ARModelController.cs
+│      ARModelController.cs.meta
+│      ARObjectInteraction.cs
+│      ARObjectInteraction.cs.meta
+│      
+├─Auth
+│      AuthScript.cs
+│      AuthScript.cs.meta
+│      AutoRedirectOnLogin.cs
+│      AutoRedirectOnLogin.cs.meta
+│      FirebaseInitializer.cs
+│      FirebaseInitializer.cs.meta
+│      FirebaseManager.cs
+│      FirebaseManager.cs.meta
+│      
+├─ChooseImage
+│      ChooseImage.cs
+│      ChooseImage.cs.meta
+│      ContentCtrler.cs
+│      ContentCtrler.cs.meta
+│      
+├─CoreUI
+│      CanvasManager.cs
+│      CanvasManager.cs.meta
+│      Popup.cs
+│      Popup.cs.meta
+│      Spinner.cs
+│      Spinner.cs.meta
+│      UIManager.cs
+│      UIManager.cs.meta
+│      
+├─DepthEffect
+│      DepthMask.shader
+│      DepthMask.shader.meta
+│      DepthMaskController.cs
+│      DepthMaskController.cs.meta
+│      DepthMaskMaterial.mat
+│      DepthMaskMaterial.mat.meta
+│      
+├─Managers
+│      ImageManager.cs
+│      ImageManager.cs.meta
+│      QDBinfoFetcher.cs
+│      QDBinfoFetcher.cs.meta
+│      QDBManager.cs
+│      QDBManager.cs.meta
+│      SpriteManager.cs
+│      SpriteManager.cs.meta
+│      
+├─Models
+│      AuthUser.cs
+│      AuthUser.cs.meta
+│      UserModel.cs
+│      UserModel.cs.meta
+│      
+├─Network
+│      RequestManager.cs
+│      RequestManager.cs.meta
+│      WebSocketClient.cs
+│      WebSocketClient.cs.meta
+│      
+├─QuestionSystem
+│      AnswerClick.cs
+│      AnswerClick.cs.meta
+│      EditQuestion.cs
+│      EditQuestion.cs.meta
+│      QScontent.cs
+│      QScontent.cs.meta
+│      QuestionLoader.cs
+│      QuestionLoader.cs.meta
+│      QuestionManager.cs
+│      QuestionManager.cs.meta
+│      
+├─SelectAnimal
+│      AnimalSelect.cs
+│      AnimalSelect.cs.meta
+│      SwitchPage.cs
+│      SwitchPage.cs.meta
+│      
+├─Upload
+│      PhotoUploader.cs
+│      PhotoUploader.cs.meta
+│      UploadFile.cs
+│      UploadFile.cs.meta
+│      URLsave.cs
+│      URLsave.cs.meta
+│      
+└─Utils
+        AnimalUtil.cs
+        AnimalUtil.cs.meta
+        

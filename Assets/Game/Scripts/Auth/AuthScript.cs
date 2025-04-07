@@ -1,7 +1,9 @@
 using UnityEngine;
 using TMPro;
 using Firebase.Auth;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 public class AuthScript : MonoBehaviour
 {
@@ -19,6 +21,7 @@ public class AuthScript : MonoBehaviour
         auth = FirebaseAuth.DefaultInstance;
     }
 
+    // ✅ 登入功能
     public async void OnLoginClicked()
     {
         string email = emailInput.text.Trim();
@@ -30,35 +33,49 @@ public class AuthScript : MonoBehaviour
         {
             case "SUCCESS":
                 statusText.color = successColor;
-                statusText.text = "✅ Login successful.";
+                statusText.text = "Login successful.";
+                SceneManager.LoadScene(0);
                 break;
+
             case "EMAIL_NOT_FOUND":
                 statusText.color = errorColor;
-                statusText.text = "⚠️ Account not registered.";
+                statusText.text = "Account not registered.";
                 break;
+
             case "INVALID_PASSWORD":
                 statusText.color = errorColor;
-                statusText.text = "❌ Incorrect password.";
+                statusText.text = "Incorrect password.";
                 break;
+
             case "INVALID_EMAIL":
                 statusText.color = errorColor;
-                statusText.text = "❌ Invalid email format.";
+                statusText.text = "Invalid email format.";
                 break;
+
             case "INTERNAL_ERROR":
                 statusText.color = errorColor;
-                statusText.text = "⚠️ Account not registered.";
+                statusText.text = "Incorrect password.";
                 break;
+
             default:
                 statusText.color = errorColor;
-                statusText.text = "❌ Login failed.";
+                statusText.text = "Login failed.";
                 break;
         }
     }
 
+    // ✅ 註冊功能（新增密碼強度檢查）
     public async void OnRegisterClicked()
     {
         string email = emailInput.text.Trim();
         string password = passwordInput.text.Trim();
+
+        if (!IsPasswordValid(password))
+        {
+            statusText.color = errorColor;
+            statusText.text = "Password must be at least 8 characters and include uppercase, lowercase, number, and special symbol.";
+            return;
+        }
 
         string result = await FirebaseManager.Register(email, password);
 
@@ -66,35 +83,56 @@ public class AuthScript : MonoBehaviour
         {
             case "REGISTER_SUCCESS":
                 statusText.color = successColor;
-                statusText.text = "✅ Registration successful. Please login.";
+                statusText.text = "Registration successful. Please login.";
                 break;
+
             case "EMAIL_IN_USE":
                 statusText.color = errorColor;
-                statusText.text = "⚠️ Email already in use.";
+                statusText.text = "Email already in use.";
                 break;
+
             case "INVALID_EMAIL":
                 statusText.color = errorColor;
-                statusText.text = "❌ Invalid email format.";
+                statusText.text = "Invalid email format.";
                 break;
+
             case "WEAK_PASSWORD":
                 statusText.color = errorColor;
-                statusText.text = "⚠️ Password too weak.";
+                statusText.text = "Password is too weak.";
                 break;
+
             case "INTERNAL_ERROR":
                 statusText.color = errorColor;
-                statusText.text = "⚠️ Server error.";
+                statusText.text = "Incorrect password.";
                 break;
+
             default:
                 statusText.color = errorColor;
-                statusText.text = "❌ Registration failed.";
+                statusText.text = "Registration failed.";
                 break;
         }
     }
 
+    // ✅ 密碼格式檢查（使用正則表達式）
+    private bool IsPasswordValid(string password)
+    {
+        if (password.Length < 8)
+            return false;
+
+        bool hasUpper = Regex.IsMatch(password, "[A-Z]");
+        bool hasLower = Regex.IsMatch(password, "[a-z]");
+        bool hasDigit = Regex.IsMatch(password, "[0-9]");
+        bool hasSpecial = Regex.IsMatch(password, "[^a-zA-Z0-9]");
+
+        return hasUpper && hasLower && hasDigit && hasSpecial;
+    }
+
+    // ✅ 登出
     public void OnLogoutClicked()
     {
         FirebaseManager.Logout();
         statusText.color = successColor;
-        statusText.text = "✅ You have logged out.";
+        statusText.text = "You have logged out.";
+        SceneManager.LoadScene(6);
     }
 }

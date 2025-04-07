@@ -16,50 +16,56 @@ public class SwitchPage : MonoBehaviour
         EDIT_QUESTION
     }
 
-    public void SwitchToLogin()
+    public void SwitchToLobby()
     {
-        Debug.Log("🔐 Switching to Login scene");
+        Debug.Log("Switching to Lobby scene");
         currentPage = Page.LOGIN;
         SceneManager.LoadScene(0);
     }
 
     public void SwitchToCreateProject()
     {
-        Debug.Log("📂 Switching to Create Project scene");
+        Debug.Log("Switching to Create Project scene");
         currentPage = Page.CREATE_PROJECT;
         SceneManager.LoadScene(1);
     }
 
     public void SwitchToProjectInterface()
     {
-        Debug.Log("📁 Switching to Project Interface scene");
+        Debug.Log("Switching to Project Interface scene");
         currentPage = Page.PROJECT_INTERFACE;
         SceneManager.LoadScene(2);
     }
 
     public void SwitchToQAInterface()
     {
-        Debug.Log("📝 Switching to QA Interface scene");
+        Debug.Log("Switching to QA Interface scene");
         currentPage = Page.QA_INTERFACE;
         SceneManager.LoadScene(3);
     }
 
     public void SwitchToQSInterface()
     {
-        Debug.Log("📊 Switching to QS Interface scene");
+        Debug.Log("Switching to QS Interface scene");
         currentPage = Page.QS_INTERFACE;
         SceneManager.LoadScene(4);
     }
 
     public void SwitchToEditQuestion()
     {
-        Debug.Log("✏️ Switching to Edit Question scene");
+        Debug.Log("Switching to Edit Question scene");
         currentPage = Page.EDIT_QUESTION;
         SceneManager.LoadScene(5);
     }
 
+    public void SwitchToLogin()
+    {
+        Debug.Log("Switching to Login scene");
+        currentPage = Page.LOGIN;
+        SceneManager.LoadScene(6);
+    }
     private void Start()
     {
-        Debug.Log($"🚩 Current Page: {currentPage}");
+        Debug.Log($"Current Page: {currentPage}");
     }
 }
