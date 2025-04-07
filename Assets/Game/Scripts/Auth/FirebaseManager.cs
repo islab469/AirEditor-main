@@ -11,6 +11,7 @@ public class FirebaseManager : MonoBehaviour
     {
         get; private set;
     }
+
     public static FirebaseAuth auth;
     public static FirebaseFirestore firestore;
     public static FirebaseUser user;
@@ -19,7 +20,7 @@ public class FirebaseManager : MonoBehaviour
     public GameObject PanelLogin;
     public GameObject PanelSelection;
 
-    void Awake()
+    private void Awake()
     {
         if (Instance == null)
         {
@@ -27,7 +28,7 @@ public class FirebaseManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             InitializeFirebase();
 
-            // 只有在這裡掛上狀態監聽，避免註冊時提前切換畫面
+            // Add state change listener after auth is initialized
             if (auth != null)
             {
                 auth.StateChanged += AuthStateChanged;
@@ -36,6 +37,21 @@ public class FirebaseManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void Start()
+    {
+        // When the scene loads, set panels based on login status
+        if (IsLoggedIn())
+        {
+            PanelLogin.SetActive(false);
+            PanelSelection.SetActive(true);
+        }
+        else
+        {
+            PanelLogin.SetActive(true);
+            PanelSelection.SetActive(false);
         }
     }
 
@@ -49,22 +65,20 @@ public class FirebaseManager : MonoBehaviour
 
         if (auth == null || firestore == null)
         {
-            Debug.LogError("Firebase initialization failed.");
+            Debug.LogError("❌ Firebase initialization failed.");
             return;
         }
 
-        Debug.Log("Firebase initialized successfully.");
+        Debug.Log("✅ Firebase initialized.");
     }
 
-    // 註冊
     public static async Task<string> Register(string email, string password)
     {
         try
         {
             await auth.CreateUserWithEmailAndPasswordAsync(email, password);
-            Debug.Log($"Registration successful for: {email}");
-
-            auth.SignOut(); // 註冊後直接登出
+            Debug.Log($"✅ Registered: {email}");
+            auth.SignOut(); // Force logout after registration
             return "REGISTER_SUCCESS";
         }
         catch (FirebaseException ex)
@@ -81,48 +95,40 @@ public class FirebaseManager : MonoBehaviour
         }
     }
 
-    // 登入
     public static async Task<string> Login(string email, string password)
     {
         try
         {
             var authResult = await auth.SignInWithEmailAndPasswordAsync(email, password);
             user = authResult.User;
-            Debug.Log($"Login successful: {user.Email}");
+            Debug.Log($"✅ Login: {user.Email}");
             return "SUCCESS";
         }
         catch (FirebaseException ex)
         {
             AuthError errorCode = (AuthError)ex.ErrorCode;
-            Debug.LogError($"Login failed: Firebase error code {ex.ErrorCode}, message: {ex.Message}, stack: {ex.StackTrace}");
-
-            switch (errorCode)
+            Debug.LogError($"Login error: {errorCode}");
+            return errorCode switch
             {
-                case AuthError.UserNotFound:
-                    return "EMAIL_NOT_FOUND";
-                case AuthError.WrongPassword:
-                    return "INVALID_PASSWORD";
-                case AuthError.InvalidEmail:
-                    return "INVALID_EMAIL";
-                case AuthError.Failure: // 處理通用的 Failure 錯誤
-                    return "EMAIL_NOT_FOUND"; // 假設這表示帳號未註冊
-                default:
-                    Debug.LogError($"Unhandled Firebase error code: {errorCode}");
-                    return "INTERNAL_ERROR";
-            }
+                AuthError.UserNotFound => "EMAIL_NOT_FOUND",
+                AuthError.WrongPassword => "INVALID_PASSWORD",
+                AuthError.InvalidEmail => "INVALID_EMAIL",
+                AuthError.Failure => "EMAIL_NOT_FOUND",
+                _ => "INTERNAL_ERROR"
+            };
         }
     }
 
-    // 登出
     public static void Logout()
     {
         if (auth != null)
         {
             auth.SignOut();
             user = null;
-            Debug.Log("User signed out.");
+            Debug.Log("👤 User signed out.");
         }
-        // 確保登出後即時更新 UI
+
+        // Show login panel, hide selection panel
         Instance.PanelLogin.SetActive(true);
         Instance.PanelSelection.SetActive(false);
     }
@@ -135,15 +141,17 @@ public class FirebaseManager : MonoBehaviour
 
             if (user != null)
             {
+                // User is logged in
                 Instance.PanelLogin?.SetActive(false);
                 Instance.PanelSelection?.SetActive(true);
-                Debug.Log("User signed in: " + user.Email);
+                Debug.Log("👤 User signed in: " + user.Email);
             }
             else
             {
+                // User is logged out
                 Instance.PanelLogin?.SetActive(true);
                 Instance.PanelSelection?.SetActive(false);
-                Debug.Log("User signed out.");
+                Debug.Log("👤 User signed out.");
             }
         }
     }
