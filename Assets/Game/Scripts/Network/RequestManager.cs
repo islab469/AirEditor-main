@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -8,8 +8,8 @@ using static QuestionManager;
 
 public class RequestManager
 {
-    private static string genQuestionUrl = "http://127.0.0.1:8000/unitydata/save_question_by_content/";
-    private static string fetchQuestionUrl = "http://127.0.0.1:8000/unitydata/save_question_by_content/";
+    private static string genQuestionUrl = "http://120.101.10.105:8000/unitydata/save_question_by_content/";
+    private static string fetchQuestionUrl = "http://120.101.10.105:8000/unitydata/save_question_by_content/";
 
     public static async Task<string> sendRequest(string url, Dictionary<string, string> contents)
     {

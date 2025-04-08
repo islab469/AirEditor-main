@@ -13,6 +13,8 @@ public class Question
     public string Title;
     public List<string> Options;
     public string Ans;
+    public string Answer;
+    public int type;
 }
 
 [System.Serializable]
@@ -27,7 +29,7 @@ public class QScontent : MonoBehaviour
     private string localPath;
     private string uid;
     private string selectedExam;
-    private string djangoUrl = "http://127.0.0.1:8000/unitydata/get_exam/";
+    private string djangoUrl = "http://120.101.10.105:8000/unitydata/get_exam/";
 
     void Start()
     {
@@ -41,15 +43,31 @@ public class QScontent : MonoBehaviour
 
         if (!string.IsNullOrEmpty(selectedExam))
         {
+            print("selectedExam 有資料");
             string filePath = localPath + selectedExam;
-            Debug.Log("File path to check: " + filePath);
 
-            Debug.Log("Force download for testing.");
-            StartCoroutine(DownloadExam(selectedExam, uid));
-        }
-        else
-        {
-            Debug.LogWarning("No selected exam found in PlayerPrefs.");
+            string cloudModifiedTime = GetCloudModifiedTime(selectedExam);
+
+            if (File.Exists(filePath))
+            {
+                string localModifiedTime = File.GetLastWriteTime(filePath).ToString("yyyy-MM-dd HH:mm:ss");
+
+                if (string.Compare(cloudModifiedTime, localModifiedTime) > 0)
+                {
+                    print("檔案有更新，下載新檔案");
+                    StartCoroutine(DownloadExam(selectedExam, uid));
+                }
+                else
+                {
+                    print("本地檔案已是最新，直接載入");
+                    LoadExam(filePath);
+                }
+            }
+            else
+            {
+                print("本地無檔案，下載題目");
+                StartCoroutine(DownloadExam(selectedExam, uid));
+            }
         }
     }
 
@@ -71,18 +89,47 @@ public class QScontent : MonoBehaviour
     {
         Debug.Log("Parsing JSON...");
         QuestionList data = JsonUtility.FromJson<QuestionList>(jsonData);
+
         if (data != null && data.Question != null)
         {
             string displayText = "";
             foreach (Question q in data.Question)
             {
+                print("type"+q.type);
                 displayText += q.Title + "\n";
-                foreach (string option in q.Options)
+                
+                switch (q.type)
                 {
-                    displayText += option + "\n";
+                    case 2: // 選擇題
+                        if (q.Options != null && q.Options.Count > 0)
+                        {
+                            foreach (string opt in q.Options)
+                            {
+                                displayText += opt + "\n";
+                            }
+                        }
+                        else
+                        {
+                            displayText += "(⚠️ 選擇題缺少選項)\n";
+                        }
+                        break;
+
+                    case 0: // 是非題
+                        
+                        break;
+
+                    case 4: // 問答題
+                        
+                        break;
+
+                    default:
+                        displayText += "(⚠️ 未知題型)\n";
+                        break;
                 }
+
                 displayText += "----------------------\n";
             }
+            print(displayText);
             examText.text = displayText;
             Debug.Log("Parsed and displayed exam.");
         }
