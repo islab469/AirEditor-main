@@ -206,7 +206,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1953279868}
         m_TargetAssemblyTypeName: SwitchPage, Assembly-CSharp
-        m_MethodName: SwitchQAInterface
+        m_MethodName: SwitchToQSInterface
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
