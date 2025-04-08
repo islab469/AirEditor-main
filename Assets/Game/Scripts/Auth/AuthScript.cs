@@ -34,7 +34,7 @@ public class AuthScript : MonoBehaviour
             case "SUCCESS":
                 statusText.color = successColor;
                 statusText.text = "Login successful.";
-                SceneManager.LoadScene(0);
+                SceneManager.LoadScene(8);
                 break;
 
             case "EMAIL_NOT_FOUND":

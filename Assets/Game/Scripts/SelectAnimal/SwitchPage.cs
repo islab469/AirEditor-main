@@ -13,13 +13,16 @@ public class SwitchPage : MonoBehaviour
         PROJECT_INTERFACE,
         QA_INTERFACE,
         QS_INTERFACE,
-        EDIT_QUESTION
+        EDIT_QUESTION,
+        Lobby,
+        AIQA,
+        LoginTransition
     }
 
     public void SwitchToLobby()
     {
         Debug.Log("Switching to Lobby scene");
-        currentPage = Page.LOGIN;
+        currentPage = Page.Lobby;
         SceneManager.LoadScene(0);
     }
 
@@ -63,6 +66,20 @@ public class SwitchPage : MonoBehaviour
         Debug.Log("Switching to Login scene");
         currentPage = Page.LOGIN;
         SceneManager.LoadScene(6);
+    }
+
+    public void SwitchToAIQA()
+    {
+        Debug.Log("Switching to AIQA scene");
+        currentPage = Page.AIQA;
+        SceneManager.LoadScene(8);
+    }
+
+    public void SwitchToLoginTransitionn()
+    {
+        Debug.Log("Switching to LoginTransition scene");
+        currentPage = Page.LoginTransition;
+        SceneManager.LoadScene(8);
     }
     private void Start()
     {

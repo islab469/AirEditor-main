@@ -159,8 +159,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.028}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0082092, y: -0.00012207}
-  m_SizeDelta: {x: 1919.5, y: 1080.9}
+  m_AnchoredPosition: {x: 0.0028608, y: -0.00012207}
+  m_SizeDelta: {x: 1929.5, y: 1080.9}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &106424478
 MonoBehaviour:
@@ -309,7 +309,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -122, y: -74}
+  m_AnchoredPosition: {x: -136, y: -105}
   m_SizeDelta: {x: 200, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &448858176
@@ -892,7 +892,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 032faf85def47944b9dd2fb9f061754d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1398e304191858940951394b028aee11, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1161,14 +1161,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 0
+    m_Left: 20
     m_Right: 0
-    m_Top: 0
+    m_Top: 20
     m_Bottom: 0
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 250, y: 250}
+  m_CellSize: {x: 200, y: 200}
   m_Spacing: {x: 50, y: 50}
   m_Constraint: 1
   m_ConstraintCount: 8
@@ -1355,7 +1355,7 @@ PrefabInstance:
     - target: {fileID: 5085466071840849630, guid: 40417e5362c63144d869b65dcecce958, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 1fee101e39b115943b31d5660e0ad532, type: 3}
+      objectReference: {fileID: 21300000, guid: 55f2eb9e9ddb7084b82484e4e30a6fb5, type: 3}
     - target: {fileID: 5097433945186446506, guid: 40417e5362c63144d869b65dcecce958, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 

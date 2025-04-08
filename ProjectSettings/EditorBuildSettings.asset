@@ -24,11 +24,14 @@ EditorBuildSettings:
     path: Assets/Game/Scenes/EditQuestion.unity
     guid: a228773fc6c082444b55f074f1c85ffe
   - enabled: 1
-    path: Assets/Game/Scenes/Login.unity
+    path: Assets/Game/Scenes/login.unity
     guid: 45894cdcb9351644482ad1e68648ad3b
   - enabled: 1
     path: Assets/Game/Scenes/AIQA.unity
     guid: f635a4629488b584a93f160bd564ea43
+  - enabled: 1
+    path: Assets/Game/Scenes/LoginTransition.unity
+    guid: 2d6449cd5809a0f42b6848477bc10fac
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: e6eee29ca8863924eae5f2943d02a642, type: 2}
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 1d76136f5752d4040bc01c1c1180221e, type: 2}
