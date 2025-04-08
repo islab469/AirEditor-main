@@ -16,7 +16,7 @@ public class QDBinfoFetcher : MonoBehaviour
     private CancellationTokenSource cts = new CancellationTokenSource();
 
     // Django ��� API ���I
-    private string apiUrl = "http://127.0.0.1:8000/unitydata/QDBinf/";
+    private string apiUrl = "http://120.101.10.105:8000/unitydata/QDBinf/";
 
     void Start()
     {

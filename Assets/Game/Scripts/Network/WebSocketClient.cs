@@ -1,43 +1,64 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using NativeWebSocket;
-using Newtonsoft.Json;
-
 
 public class WebSocketClient : MonoBehaviour
 {
-    private WebSocket ws;
+    private WebSocket websocket;
 
-    async void Start()
+    async void Awake()
     {
-        ws = new WebSocket("ws://your-django-server/ws/questions/");
+        DontDestroyOnLoad(this.gameObject);
+        Application.runInBackground = true;
 
-        ws.OnMessage += (message) =>
+        string serverUrl = "ws://127.0.0.1:8000/ws/questions/"; // 改成你的 Django WebSocket URL
+        websocket = new WebSocket(serverUrl);
+
+        websocket.OnOpen += () =>
         {
-            string jsonMessage = Encoding.UTF8.GetString(message);
-            Debug.Log("Received Question Update: " + jsonMessage);
+            Debug.Log("✅ WebSocket 已連線！");
+        };
+
+        websocket.OnError += (e) =>
+        {
+            Debug.LogError("❌ WebSocket 錯誤: " + e);
+        };
+
+        websocket.OnClose += (e) =>
+        {
+            Debug.LogWarning("⚠️ WebSocket 已關閉，代碼：" + e);
+        };
+
+        websocket.OnMessage += (bytes) =>
+        {
+            string message = Encoding.UTF8.GetString(bytes);
+            Debug.Log("📩 收到訊息: " + message);
 
             try
             {
-                List<QDBManager.FileData> receivedFiles = JsonConvert.DeserializeObject<List<QDBManager.FileData>>(jsonMessage);
-                QDBManager.FileList.Clear();
-                QDBManager.FileList.AddRange(receivedFiles);
-
-                Debug.Log("Updated QDBManager.FileList with " + receivedFiles.Count + " files.");
+                QDBManager.FileData data = JsonUtility.FromJson<QDBManager.FileData>(message);
+                QDBManager.FileList.Add(data);
+                Debug.Log("✅ 已加入 QDBManager: " + data.filename);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Debug.LogError("Failed to parse JSON: " + e.Message);
+                Debug.LogError("❌ JSON 解析失敗: " + ex.Message);
             }
         };
 
-        await ws.Connect();
+        await websocket.Connect();
+    }
+
+    void Update()
+    {
+#if !UNITY_WEBGL || UNITY_EDITOR
+        websocket?.DispatchMessageQueue();
+#endif
     }
 
     private async void OnApplicationQuit()
     {
-        await ws.Close();
+        await websocket.Close();
     }
 }

@@ -36,7 +36,7 @@ public class AIgeneral : MonoBehaviour
     // 協程：上傳內容至指定的 URL
     IEnumerator UploadContent(string content, int qtype, string topic, string filename)
     {
-        string url = "http://127.0.0.1:8000/unitydata/upload_content/"; // 更改為你的上傳 API
+        string url = "http://120.101.10.105:8000/unitydata/upload_content/"; // 更改為你的上傳 API
         WWWForm form = new WWWForm(); // 創建新的表單
 
         string id = FirebaseManager.GetEmail(); // 獲取當前用戶的 email

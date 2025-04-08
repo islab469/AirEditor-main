@@ -75,7 +75,7 @@ public class UploadFile : MonoBehaviour
     /// </summary>
     private IEnumerator UploadFileCoroutine(byte[] imageData, string urlText, string email)
     {
-        string apiUrl = "http://127.0.0.1:8000/unitydata/upload_data/";
+        string apiUrl = "http://120.101.10.105:8000/unitydata/upload_data/";
 
         WWWForm form = new WWWForm();
         form.AddBinaryData("image", imageData, imageName + ".png", "image/png");

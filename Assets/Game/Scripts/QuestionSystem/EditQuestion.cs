@@ -9,7 +9,7 @@ using System.Text;
 
 public class EditQuestion : MonoBehaviour
 {
-    public TMP_InputField mainInput; // ≥Ê§@øÈ§JÆÿ
+    public TMP_InputField mainInput; // ÂñÆ‰∏ÄËº∏ÂÖ•Ê°Ü
     public Button prevButton;
     public Button nextButton;
     public Button saveButton;
@@ -18,27 +18,27 @@ public class EditQuestion : MonoBehaviour
     private int currentIndex = 0;
     private string localPath;
     private string selectedExam;
-    private string djangoUrl = "http://127.0.0.1:8000/unitydata/upload_exam/";
+    private string djangoUrl = "http://120.101.10.105:8000/unitydata/upload_exam/";
 
     void Start()
     {
-        // ∑«≥∆∏ÙÆ|ªP∏ÍÆ∆
+        // Ê∫ñÂÇôË∑ØÂæëËàáË≥áÊñô
         localPath = Path.Combine(Application.persistentDataPath, "QDBFiles");
         selectedExam = PlayerPrefs.GetString("selected_file", "");
         LoadExam(Path.Combine(localPath, selectedExam));
 
-        // ∏j©w´ˆ∂s®∆•Û
+        // Á∂ÅÂÆöÊåâÈàï‰∫ã‰ª∂
         prevButton.onClick.AddListener(PreviousQuestion);
         nextButton.onClick.AddListener(NextQuestion);
         saveButton.onClick.AddListener(SaveExam);
 
-        // ∫ ≈•øÈ§Jßπ¶®
+        // Áõ£ËÅΩËº∏ÂÖ•ÂÆåÊàê
         mainInput.onEndEdit.AddListener(UpdateQuestion);
 
         DisplayQuestion();
     }
 
-    // ∏¸§J JSON ¿…Æ◊¶®¨∞ QuestionList
+    // ËºâÂÖ• JSON Ê™îÊ°àÊàêÁÇ∫ QuestionList
     void LoadExam(string filePath)
     {
         if (File.Exists(filePath))
@@ -52,37 +52,56 @@ public class EditQuestion : MonoBehaviour
         }
     }
 
-    // ≈„•‹•ÿ´e√D•ÿ
+    // È°ØÁ§∫ÁõÆÂâçÈ°åÁõÆ
     void DisplayQuestion()
     {
         if (questionList != null && questionList.Question.Count > 0)
         {
             var q = questionList.Question[currentIndex];
 
-            // ¶X®÷¨∞øÈ§JÆÿ¶r¶Í
+
+            // Âêà‰ΩµÁÇ∫Ëº∏ÂÖ•Ê°ÜÂ≠ó‰∏≤
             StringBuilder builder = new StringBuilder();
             builder.AppendLine(q.Title);
 
-            for (int i = 0; i < q.Options.Count; i++)
+            switch (q.type)
             {
-                string option = q.Options[i].Trim();
-                char prefix = (char)('A' + i);
+                case 2: // ÈÅ∏ÊìáÈ°å
+                    if (q.Options != null && q.Options.Count > 0)
+                    {
 
-                if (!option.StartsWith("(A)") && !option.StartsWith("(B)") &&
-                    !option.StartsWith("(C)") && !option.StartsWith("(D)"))
-                {
-                    option = $"({prefix}) {option}";
-                }
+                        for (int i = 0; i < q.Options.Count; i++)
+                        {
+                            string option = q.Options[i].Trim();
+                            char prefix = (char)('A' + i);
+                            if (!option.StartsWith("(A)") && !option.StartsWith("(B)") &&
+                                !option.StartsWith("(C)") && !option.StartsWith("(D)"))
+                            {
+                                option = $"({prefix}) {option}";
+                            }
+                            builder.AppendLine(option);
+                        }
+                        builder.Append(q.Ans);
+                    }
+                    break;
 
-                builder.AppendLine(option);
+                case 0: // ÊòØÈùûÈ°å
+                    builder.AppendLine("Á≠îÊ°à : " + q.Answer);
+                    break;
+
+                case 4: // ÂïèÁ≠îÈ°å
+                    builder.AppendLine("Á≠îÊ°à : " + q.Answer);
+                    break;
+
+                default:
+
+                    break;
             }
-
-            builder.Append(q.Ans);
             mainInput.text = builder.ToString();
         }
     }
 
-    // ∑Ì≠◊ßÔøÈ§JÆÿ´·ßÛ∑s∑Ì´e√D•ÿ§∫Æe
+    // Áï∂‰øÆÊîπËº∏ÂÖ•Ê°ÜÂæåÊõ¥Êñ∞Áï∂ÂâçÈ°åÁõÆÂÖßÂÆπ
     void UpdateQuestion(string newText)
     {
         if (questionList != null && questionList.Question.Count > 0)
@@ -105,7 +124,7 @@ public class EditQuestion : MonoBehaviour
         }
     }
 
-    // §W§@√D
+    // ‰∏ä‰∏ÄÈ°å
     void PreviousQuestion()
     {
         if (currentIndex > 0)
@@ -115,7 +134,7 @@ public class EditQuestion : MonoBehaviour
         }
     }
 
-    // §U§@√D
+    // ‰∏ã‰∏ÄÈ°å
     void NextQuestion()
     {
         if (currentIndex < questionList.Question.Count - 1)
@@ -125,7 +144,7 @@ public class EditQuestion : MonoBehaviour
         }
     }
 
-    // ¿x¶s®√§W∂«¶“®˜
+    // ÂÑ≤Â≠ò‰∏¶‰∏äÂÇ≥ËÄÉÂç∑
     void SaveExam()
     {
         if (questionList == null)
@@ -148,7 +167,7 @@ public class EditQuestion : MonoBehaviour
         StartCoroutine(UploadExam(uid, filename, jsonData));
     }
 
-    // µo∞e HTTP POST §W∂«∏ÍÆ∆¶‹ Django
+    // ÁôºÈÄÅ HTTP POST ‰∏äÂÇ≥Ë≥áÊñôËá≥ Django
     IEnumerator UploadExam(string uid, string filename, string jsonData)
     {
         string payload = $"{{\"uid\":\"{uid}\", \"filename\":\"{filename}\", \"data\":{jsonData}}}";
