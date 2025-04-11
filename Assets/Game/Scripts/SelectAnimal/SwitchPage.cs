@@ -16,71 +16,80 @@ public class SwitchPage : MonoBehaviour
         EDIT_QUESTION,
         Lobby,
         AIQA,
-        LoginTransition
+        LoginTransition,
+        AR
     }
 
     public void SwitchToLobby()
     {
         Debug.Log("Switching to Lobby scene");
         currentPage = Page.Lobby;
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("Lobby");
     }
 
     public void SwitchToCreateProject()
     {
         Debug.Log("Switching to Create Project scene");
         currentPage = Page.CREATE_PROJECT;
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene("CreateProject");
     }
 
     public void SwitchToProjectInterface()
     {
         Debug.Log("Switching to Project Interface scene");
         currentPage = Page.PROJECT_INTERFACE;
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene("ProjectInterface");
     }
 
     public void SwitchToQAInterface()
     {
         Debug.Log("Switching to QA Interface scene");
         currentPage = Page.QA_INTERFACE;
-        SceneManager.LoadScene(3);
+        SceneManager.LoadScene("QAInterface");
     }
 
     public void SwitchToQSInterface()
     {
         Debug.Log("Switching to QS Interface scene");
         currentPage = Page.QS_INTERFACE;
-        SceneManager.LoadScene(4);
+        SceneManager.LoadScene("QSInterface");
     }
 
     public void SwitchToEditQuestion()
     {
         Debug.Log("Switching to Edit Question scene");
         currentPage = Page.EDIT_QUESTION;
-        SceneManager.LoadScene(5);
+        SceneManager.LoadScene("EditQuestion");
     }
 
     public void SwitchToLogin()
     {
         Debug.Log("Switching to Login scene");
         currentPage = Page.LOGIN;
-        SceneManager.LoadScene(6);
+        SceneManager.LoadScene("Login");
     }
 
     public void SwitchToAIQA()
     {
         Debug.Log("Switching to AIQA scene");
         currentPage = Page.AIQA;
-        SceneManager.LoadScene(8);
+        SceneManager.LoadScene("AIQA");
     }
 
     public void SwitchToLoginTransitionn()
     {
         Debug.Log("Switching to LoginTransition scene");
         currentPage = Page.LoginTransition;
-        SceneManager.LoadScene(8);
+        SceneManager.LoadScene("LoginTransition");
     }
+
+    public void SwitchToAR()
+    {
+        Debug.Log("Switching to AR scene");
+        currentPage = Page.AR;
+        SceneManager.LoadScene("AR");
+    }
+
     private void Start()
     {
         Debug.Log($"Current Page: {currentPage}");

@@ -12,7 +12,7 @@ public class WebSocketClient : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
         Application.runInBackground = true;
 
-        string serverUrl = "ws://127.0.0.1:8000/ws/questions/"; // 改成你的 Django WebSocket URL
+        string serverUrl = "ws://120.101.10.105:8000/ws/questions/"; // 改成你的 Django WebSocket URL
         websocket = new WebSocket(serverUrl);
 
         websocket.OnOpen += () =>
