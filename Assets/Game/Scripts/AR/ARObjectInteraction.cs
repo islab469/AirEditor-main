@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.XR.ARFoundation;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
@@ -18,6 +18,14 @@ public class ARObjectInteraction : MonoBehaviour
     void Awake()
     {
         EnhancedTouchSupport.Enable();
+
+        // 檢查 AR Session 狀態，這裡會提示 ARSession 是否正在啟動
+        Debug.Log("🟢 AR Session State (Awake): " + ARSession.state);
+
+        if (ARSession.state < ARSessionState.SessionTracking)
+        {
+            Debug.LogWarning("⚠️ AR Session is not fully started yet. Waiting...");
+        }
     }
 
     void Start()
@@ -29,7 +37,7 @@ public class ARObjectInteraction : MonoBehaviour
             Debug.LogError("🚨 ARObjectInteraction is not attached to any object!");
         }
 
-        Debug.Log("🟢 AR Session State: " + ARSession.state);
+        Debug.Log("🟢 AR Session State (Start): " + ARSession.state);
         if (ARSession.state < ARSessionState.SessionTracking)
         {
             Debug.LogWarning("⚠️ AR Session has not fully started. Please check the AR setup!");
@@ -43,58 +51,73 @@ public class ARObjectInteraction : MonoBehaviour
 
     void Update()
     {
-        var activeTouches = Touch.activeTouches;
-        Debug.Log("🖐 Active touch count: " + activeTouches.Count);
+        // 檢查 AR Session 是否已經啟動
+        if (ARSession.state < ARSessionState.SessionTracking)
+        {
+            Debug.LogWarning("⚠️ AR Session is not fully started yet. Waiting...");
+            return;  // 等待 AR Session 完全啟動，跳過後續處理
+        }
 
-        if (activeTouches.Count == 1) // Single finger rotation
+        // AR Session 已啟動，可以進行交互操作
+        if (objectTransform == null)
+            return;
+
+        var activeTouches = Touch.activeTouches;
+
+        if (activeTouches.Count == 1)
         {
             var touch = activeTouches[0];
-            Debug.Log("📌 Single touch DeltaX: " + touch.delta.x);
-
             if (touch.phase == TouchPhase.Moved)
             {
                 Vector3 rotation = objectTransform.localEulerAngles;
+                float currentX = NormalizeAngle(rotation.x);
+                float newX = currentX + touch.delta.y * rotationSpeed * Time.deltaTime;
+                newX = Mathf.Clamp(newX, -80f, 80f);  // 限制上下旋轉
+                rotation.x = newX;
                 rotation.y -= touch.delta.x * rotationSpeed * Time.deltaTime;
                 objectTransform.localEulerAngles = rotation;
+
+                Debug.Log($"📌 Rotate: ΔX={touch.delta.x}, ΔY={touch.delta.y}");
             }
         }
-        else if (activeTouches.Count == 2) // 兩指縮放與移動
+        else if (activeTouches.Count == 2)
         {
             var touch0 = activeTouches[0];
             var touch1 = activeTouches[1];
-
             float currentDistance = Vector2.Distance(touch0.screenPosition, touch1.screenPosition);
 
-            // 處理縮放邏輯
             if (touch0.phase == TouchPhase.Began || touch1.phase == TouchPhase.Began)
             {
                 initialDistance = currentDistance;
                 initialScale = objectTransform.localScale;
-
                 initialTouch0Position = touch0.screenPosition;
                 initialTouch1Position = touch1.screenPosition;
-
-                initialObjectPosition = objectTransform.position; // 儲存初始位置
+                initialObjectPosition = objectTransform.position;
             }
             else if (touch0.phase == TouchPhase.Moved || touch1.phase == TouchPhase.Moved)
             {
-                // 縮放
                 if (initialDistance > 1e-5f)
                 {
                     float scaleFactor = Mathf.Clamp(currentDistance / initialDistance, 0.5f, 2f);
                     objectTransform.localScale = Vector3.Lerp(objectTransform.localScale, initialScale * scaleFactor, Time.deltaTime * scaleSmoothness);
                 }
 
-                // 移動物件
                 Vector2 currentTouch0Position = touch0.screenPosition;
                 Vector2 currentTouch1Position = touch1.screenPosition;
-
                 Vector2 touchDelta = (currentTouch0Position + currentTouch1Position) / 2 - (initialTouch0Position + initialTouch1Position) / 2;
-                Vector3 move = new Vector3(touchDelta.x * 0.01f, 0, touchDelta.y * 0.01f);  // 計算移動方向
 
-                objectTransform.position = initialObjectPosition + move; // 移動物件並更新位置
+                Vector3 move = new Vector3(touchDelta.x * 0.01f, 0, touchDelta.y * 0.01f);
+                objectTransform.position = initialObjectPosition + move;
             }
         }
+    }
+
+    // 將角度轉換為 -180~180
+    float NormalizeAngle(float angle)
+    {
+        if (angle > 180f)
+            angle -= 360f;
+        return angle;
     }
 
     void OnDisable()

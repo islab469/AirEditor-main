@@ -87,7 +87,7 @@ public class SwitchPage : MonoBehaviour
     {
         Debug.Log("Switching to AR scene");
         currentPage = Page.AR;
-        SceneManager.LoadScene("AR");
+        SceneManager.LoadScene("ARTEST");
     }
 
     private void Start()
