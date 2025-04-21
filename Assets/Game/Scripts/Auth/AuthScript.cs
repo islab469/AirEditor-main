@@ -19,6 +19,21 @@ public class AuthScript : MonoBehaviour
     private void Start()
     {
         auth = FirebaseAuth.DefaultInstance;
+
+        // 設定密碼框為密碼模式，顯示為 *
+        passwordInput.contentType = TMP_InputField.ContentType.Password;
+        passwordInput.lineType = TMP_InputField.LineType.SingleLine;
+        passwordInput.characterLimit = 20;
+
+        // 添加密碼框變更監聽事件，確保輸入顯示為 *
+        passwordInput.onValueChanged.AddListener(OnPasswordChanged);
+    }
+
+    // 密碼輸入時顯示 *
+    private void OnPasswordChanged(string password)
+    {
+        // 將密碼框中的文本替換為 *，顯示相同長度的隱藏字符
+        passwordInput.text = new string('*', password.Length);
     }
 
     // ✅ 登入功能

@@ -539,7 +539,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u767B\u9678"
+  m_text: "\u767B\u5165"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: eaf4cf186ff9321488f41de30a8d7c9a, type: 2}
   m_sharedMaterial: {fileID: 455282105541661930, guid: eaf4cf186ff9321488f41de30a8d7c9a, type: 2}
@@ -794,8 +794,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: eaf4cf186ff9321488f41de30a8d7c9a, type: 2}
-  m_sharedMaterial: {fileID: 455282105541661930, guid: eaf4cf186ff9321488f41de30a8d7c9a, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 085c43fb04c6c0e41b14a289b317bbd6, type: 2}
+  m_sharedMaterial: {fileID: -7744005686810113474, guid: 085c43fb04c6c0e41b14a289b317bbd6, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1318,7 +1318,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: -0.0015258789}
+  m_AnchoredPosition: {x: 0.00012207031, y: -0.0015258789}
   m_SizeDelta: {x: 0, y: 0.4000244}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &971066534
@@ -2345,8 +2345,8 @@ MonoBehaviour:
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
   m_ScrollSensitivity: 1
-  m_ContentType: 0
-  m_InputType: 0
+  m_ContentType: 7
+  m_InputType: 2
   m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
