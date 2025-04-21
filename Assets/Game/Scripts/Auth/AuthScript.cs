@@ -4,6 +4,7 @@ using Firebase.Auth;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine.SceneManagement;
+using Firebase;
 
 public class AuthScript : MonoBehaviour
 {
@@ -19,21 +20,6 @@ public class AuthScript : MonoBehaviour
     private void Start()
     {
         auth = FirebaseAuth.DefaultInstance;
-
-        // 設定密碼框為密碼模式，顯示為 *
-        passwordInput.contentType = TMP_InputField.ContentType.Password;
-        passwordInput.lineType = TMP_InputField.LineType.SingleLine;
-        passwordInput.characterLimit = 20;
-
-        // 添加密碼框變更監聽事件，確保輸入顯示為 *
-        passwordInput.onValueChanged.AddListener(OnPasswordChanged);
-    }
-
-    // 密碼輸入時顯示 *
-    private void OnPasswordChanged(string password)
-    {
-        // 將密碼框中的文本替換為 *，顯示相同長度的隱藏字符
-        passwordInput.text = new string('*', password.Length);
     }
 
     // ✅ 登入功能
@@ -42,40 +28,49 @@ public class AuthScript : MonoBehaviour
         string email = emailInput.text.Trim();
         string password = passwordInput.text.Trim();
 
-        string result = await FirebaseManager.Login(email, password);
-
-        switch (result)
+        try
         {
-            case "SUCCESS":
-                statusText.color = successColor;
-                statusText.text = "Login successful.";
-                SceneManager.LoadScene(8);
-                break;
+            var result = await FirebaseManager.Login(email, password);
 
-            case "EMAIL_NOT_FOUND":
-                statusText.color = errorColor;
-                statusText.text = "Account not registered.";
-                break;
+            switch (result)
+            {
+                case "SUCCESS":
+                    statusText.color = successColor;
+                    statusText.text = "登入成功。";
+                    SceneManager.LoadScene(8);
+                    break;
 
-            case "INVALID_PASSWORD":
-                statusText.color = errorColor;
-                statusText.text = "Incorrect password.";
-                break;
+                case "EMAIL_NOT_FOUND":
+                    statusText.color = errorColor;
+                    statusText.text = "帳號未註冊。";
+                    break;
 
-            case "INVALID_EMAIL":
-                statusText.color = errorColor;
-                statusText.text = "Invalid email format.";
-                break;
+                case "INVALID_PASSWORD":
+                    statusText.color = errorColor;
+                    statusText.text = "密碼錯誤。";
+                    break;
 
-            case "INTERNAL_ERROR":
-                statusText.color = errorColor;
-                statusText.text = "Incorrect password.";
-                break;
+                case "INVALID_EMAIL":
+                    statusText.color = errorColor;
+                    statusText.text = "電子郵件格式錯誤。";
+                    break;
 
-            default:
-                statusText.color = errorColor;
-                statusText.text = "Login failed.";
-                break;
+                case "INTERNAL_ERROR":
+                    statusText.color = errorColor;
+                    statusText.text = "內部錯誤，請稍後再試。";
+                    break;
+
+                default:
+                    statusText.color = errorColor;
+                    statusText.text = "登入失敗，請檢查您的帳號或密碼。";
+                    break;
+            }
+        }
+        catch (FirebaseException ex)
+        {
+            // 捕獲 Firebase 錯誤，並顯示詳細錯誤信息
+            statusText.color = errorColor;
+            statusText.text = "登入過程中出現錯誤: " + ex.Message;
         }
     }
 
@@ -88,43 +83,52 @@ public class AuthScript : MonoBehaviour
         if (!IsPasswordValid(password))
         {
             statusText.color = errorColor;
-            statusText.text = "Password must be at least 8 characters and include uppercase, lowercase, number, and special symbol.";
+            statusText.text = "密碼必須至少包含 8 個字符，並且包含大寫字母、小寫字母、數字和特殊符號。";
             return;
         }
 
-        string result = await FirebaseManager.Register(email, password);
-
-        switch (result)
+        try
         {
-            case "REGISTER_SUCCESS":
-                statusText.color = successColor;
-                statusText.text = "Registration successful. Please login.";
-                break;
+            var result = await FirebaseManager.Register(email, password);
 
-            case "EMAIL_IN_USE":
-                statusText.color = errorColor;
-                statusText.text = "Email already in use.";
-                break;
+            switch (result)
+            {
+                case "REGISTER_SUCCESS":
+                    statusText.color = successColor;
+                    statusText.text = "註冊成功，請進行登入。";
+                    break;
 
-            case "INVALID_EMAIL":
-                statusText.color = errorColor;
-                statusText.text = "Invalid email format.";
-                break;
+                case "EMAIL_IN_USE":
+                    statusText.color = errorColor;
+                    statusText.text = "該電子郵件已經被註冊。";
+                    break;
 
-            case "WEAK_PASSWORD":
-                statusText.color = errorColor;
-                statusText.text = "Password is too weak.";
-                break;
+                case "INVALID_EMAIL":
+                    statusText.color = errorColor;
+                    statusText.text = "電子郵件格式錯誤。";
+                    break;
 
-            case "INTERNAL_ERROR":
-                statusText.color = errorColor;
-                statusText.text = "Incorrect password.";
-                break;
+                case "WEAK_PASSWORD":
+                    statusText.color = errorColor;
+                    statusText.text = "密碼強度不足，請使用較強的密碼。";
+                    break;
 
-            default:
-                statusText.color = errorColor;
-                statusText.text = "Registration failed.";
-                break;
+                case "INTERNAL_ERROR":
+                    statusText.color = errorColor;
+                    statusText.text = "內部錯誤，請稍後再試。";
+                    break;
+
+                default:
+                    statusText.color = errorColor;
+                    statusText.text = "註冊失敗，請稍後再試。";
+                    break;
+            }
+        }
+        catch (FirebaseException ex)
+        {
+            // 捕獲 Firebase 錯誤，並顯示詳細錯誤信息
+            statusText.color = errorColor;
+            statusText.text = "註冊過程中出現錯誤: " + ex.Message;
         }
     }
 
@@ -147,7 +151,7 @@ public class AuthScript : MonoBehaviour
     {
         FirebaseManager.Logout();
         statusText.color = successColor;
-        statusText.text = "You have logged out.";
+        statusText.text = "您已經成功登出。";
         SceneManager.LoadScene(6);
     }
 }
