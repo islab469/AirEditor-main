@@ -4,7 +4,8 @@ using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
-using Xceed.Words.NET; // 使用 DocX 套件
+using DocumentFormat.OpenXml.Packaging;  // 使用 OpenXml 來操作 Word 文檔
+using DocumentFormat.OpenXml.Wordprocessing;  // 使用 OpenXml 來操作 Word 文檔
 using Application = UnityEngine.Application;
 
 [System.Serializable]
@@ -95,9 +96,9 @@ public class QScontent : MonoBehaviour
             string displayText = "";
             foreach (Question q in data.Question)
             {
-                print("type"+q.type);
+                print("type" + q.type);
                 displayText += q.Title + "\n";
-                
+
                 switch (q.type)
                 {
                     case 2: // 選擇題
@@ -115,11 +116,9 @@ public class QScontent : MonoBehaviour
                         break;
 
                     case 0: // 是非題
-                        
                         break;
 
                     case 4: // 問答題
-                        
                         break;
 
                     default:
@@ -206,10 +205,19 @@ public class QScontent : MonoBehaviour
 
     void SaveToWord(string filePath)
     {
-        using (var doc = DocX.Create(filePath))
+        using (WordprocessingDocument wordDocument = WordprocessingDocument.Create(filePath, DocumentFormat.OpenXml.WordprocessingDocumentType.Document))
         {
-            doc.InsertParagraph(examText.text);
-            doc.Save();
+            // 添加文檔的主體
+            MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
+            mainPart.Document = new Document(new Body());  // 正確使用 `Body`
+
+            // 向文檔中添加段落
+            Body body = mainPart.Document.Body;
+            Paragraph para = new Paragraph(new Run(new Text(examText.text)));  // 插入 `examText`
+            body.AppendChild(para);
+
+            // 保存文檔
+            mainPart.Document.Save();
         }
     }
 }
