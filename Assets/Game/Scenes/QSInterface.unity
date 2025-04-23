@@ -2351,8 +2351,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 085c43fb04c6c0e41b14a289b317bbd6, type: 2}
-  m_sharedMaterial: {fileID: -7744005686810113474, guid: 085c43fb04c6c0e41b14a289b317bbd6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 76bd6d00556e14e46b6317a5f6f69a24, type: 2}
+  m_sharedMaterial: {fileID: 5334267364518485081, guid: 76bd6d00556e14e46b6317a5f6f69a24, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2647,7 +2647,7 @@ GameObject:
   - component: {fileID: 1639487125}
   - component: {fileID: 1639487124}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: PopupPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
