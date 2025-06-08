@@ -1,6 +1,7 @@
 # ========== Unity Generated Folders ==========
 [Ll]ibrary/
 [Tt]emp/
+[Bb]in/
 [Oo]bj/
 [Bb]uild/
 [Bb]uilds/
@@ -11,6 +12,7 @@ UserSettings/
 # ========== Rider / VS / VS Code ==========
 .vs/
 .idea/
+\.vscode/
 *.csproj
 *.unityproj
 *.sln
@@ -32,6 +34,14 @@ desktop.ini
 *.zip
 *.apk
 *.aab
+Packages/packages-lock.json
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.old
+*.orig
+*.log
 
 # ========== Git LFS 管理大型資源（由 .gitattributes 控制） ==========
 # 不需在這裡排除，由 LFS 管理即可
