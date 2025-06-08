@@ -2,6 +2,9 @@
 # 🚀 Unity 專案推薦 .gitattributes 設定
 # =====================================
 
+# Auto normalize text files
+* text=auto
+
 # ---------- 強制使用 LF 換行 ----------
 *.cs       text eol=lf
 *.shader   text eol=lf
@@ -11,6 +14,10 @@
 *.meta     text eol=lf
 *.unity    text eol=lf
 *.asset    text eol=lf
+*.prefab   text eol=lf
+*.mat      text eol=lf
+*.anim     text eol=lf
+*.controller text eol=lf
 *.asmdef   text eol=lf
 *.uxml     text eol=lf
 *.uss      text eol=lf
